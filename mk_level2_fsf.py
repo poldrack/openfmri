@@ -54,7 +54,7 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
     conditions=cond_key[tasknum].values()
     nruns=len(runs)
 
-    stubfilename=basedir+'/group_design.stub'
+    stubfilename=basedir+'/design_level2.stub'
     modeldir=subdir+'/model/'
 
     outfilename='%s/model/task%03d.fsf'%(subdir,tasknum)
