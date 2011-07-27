@@ -84,11 +84,11 @@ def mk_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir):
     outfile.write('set feat_files(1) "%s/BOLD/task%03d_run%03d/bold_mcf_brain"\n'%(subdir,tasknum,runnum))
     if use_inplane==1:
         outfile.write('set fmri(reginitial_highres_yn) 1\n')
-        outfile.write('set initial_highres_files(1) "%s/anatomy/inplane_brain"\n'%subdir)
+        outfile.write('set initial_highres_files(1) "%s/anatomy/inplane001_brain"\n'%subdir)
     else:
         outfile.write('set fmri(reginitial_highres_yn) 0\n')
 
-    outfile.write('set highres_files(1) "%s/anatomy/highres_brain"\n'%subdir)
+    outfile.write('set highres_files(1) "%s/anatomy/highres001_brain"\n'%subdir)
     outfile.write('set fmri(npts) %d\n'%ntp)
     outfile.write('set fmri(tr) %0.2f\n'%tr)
     nevs=len(conditions)+6

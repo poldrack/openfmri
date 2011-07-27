@@ -1,4 +1,4 @@
-""" run_copy_stripped.py - copy skull-stripped images from freesurfer dirs
+""" mk_all_level1_fsf.py - make fsf files for all subjects
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -24,29 +24,39 @@
 ## ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-
 import os
+from mk_level1_fsf import *
 dataset='ds001'
-
 basedir='/corral/utexas/poldracklab/openfmri/staged/'
-outfile=open('run_copy_stripped.sh','w')
-#subdir=basedir+'subdir'
-subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
+outfile=open('mk_all_level1_fsf.sh','w')
 
+smoothing=6
+tr=2.0
+use_inplane=1
 
 for root,dirs,files in os.walk(basedir):
     for f in files:
-        if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
+        if f.rfind('bold_mcf.nii.gz')>-1 and root.find(dataset)>-1:
             f_split=root.split('/')
-            outfile.write('mri_convert --out_orientation LAS %s/%s_%s/mri/brainmask.mgz --reslice_like %s/highres.nii.gz  %s/highres_brain.nii\n'%(subdir,f_split[6],f_split[7],root,root))
-            outfile.write('gzip %s/highres_brain.nii\n'%root)
-            outfile.write('fslmaths %s/highres_brain.nii.gz -thr 1 -bin %s/highres_brain_mask.nii.gz\n'%(root,root))
+            scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
+            taskid=f_split[6]
+            subnum=int(f_split[7].lstrip('sub'))
+            taskinfo=f_split[9].split('_')
+            tasknum=int(taskinfo[0].lstrip('task'))
+            runnum=int(taskinfo[1].lstrip('run'))
+            tr=float(load_scankey(scankey)['TR'])
+            # check for inplane
+            inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
+            if os.path.exists(inplane):
+                use_inplane=1
+            else:
+                use_inplane=0
+            print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+            mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
 
 outfile.close()
 
+print 'now run all feats using:'
+print "find ds*/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"
             
-print 'now launch using:'
-print 'sh run_copy_stripped.sh'
-
-
 
