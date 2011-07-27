@@ -1,4 +1,30 @@
 #!/usr/bin/env python
+"""mk_level2_fsf.py - make 2nd level (between-runs) fixed effect model
+"""
+
+## Copyright 2011, Russell Poldrack. All rights reserved.
+
+## Redistribution and use in source and binary forms, with or without modification, are
+## permitted provided that the following conditions are met:
+
+##    1. Redistributions of source code must retain the above copyright notice, this list of
+##       conditions and the following disclaimer.
+
+##    2. Redistributions in binary form must reproduce the above copyright notice, this list
+##       of conditions and the following disclaimer in the documentation and/or other materials
+##       provided with the distribution.
+
+## THIS SOFTWARE IS PROVIDED BY RUSSELL POLDRACK ``AS IS'' AND ANY EXPRESS OR IMPLIED
+## WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+## FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL RUSSELL POLDRACK OR
+## CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+## CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+## SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+## ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+## NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+## ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 
 # create fsf file for arbitrary design
 import numpy as N
@@ -9,15 +35,16 @@ from openfmri_utils import *
 
 # create as a function that will be called by mk_all_fsf.py
 # just set these for testing
-## taskid='ds006'
-## subnum=2
-## tasknum=1
+#taskid='ds003'
+#subnum=1
+#tasknum=2
 ## nruns=6
+#runs=[1,2]
 
-basedir='/corral/utexas/poldracklab/openfmri/staged/'
+#basedir='/corral/utexas/poldracklab/openfmri/shared/'
 
 def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
-
+#if 1==1:
 
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
@@ -49,14 +76,16 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
     outfile.write('set fmri(outputdir) "%s/model/task%03d.gfeat"\n'%(subdir,tasknum))
     outfile.write('set fmri(npts) %d\n'%nruns) # number of runs
     outfile.write('set fmri(multiple) %d\n'%nruns) # number of runs
-    outfile.write('set fmri(ncopeimputs) %d\n'%len(cond_key[tasknum])) # number of copes
+    outfile.write('set fmri(ncopeinputs) %d\n'%int(len(cond_key[tasknum])+1)) # number of copes
 
 
     for r in range(nruns):
         outfile.write('set feat_files(%d) "%s/%s/sub%03d/model/task%03d_run%03d.feat"\n'%(int(r+1),basedir,taskid,subnum,tasknum,runs[r]))
         outfile.write('set fmri(evg%d.1) 1\n'%int(r+1))
         outfile.write('set fmri(groupmem.%d) 1\n'%int(r+1))
-        outfile.write('set fmri(copeinput.%d) 1\n'%int(r+1))
+
+    for c in range(len(cond_key[tasknum])+1):
+        outfile.write('set fmri(copeinput.%d) 1\n'%int(c+1))
         
                 
         
