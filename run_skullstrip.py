@@ -26,6 +26,7 @@
 
 
 import os
+dataset='ds001'
 
 basedir='/corral/utexas/poldracklab/openfmri/shared/'
 outfile=open('run_skullstrip.sh','w')
@@ -34,7 +35,7 @@ subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
 
 for root,dirs,files in os.walk(basedir):
     for f in files:
-        if f.rfind('highres.nii.gz')>-1 and root.find('ds011')>-1:
+        if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
             f_split=root.split('/')
             outfile.write('recon-all -autorecon1 -subjid %s_%s -sd %s\n'%(f_split[6],f_split[7],subdir))
 
