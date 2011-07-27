@@ -33,11 +33,9 @@ from tsne import *
 import numpy as N
 import matplotlib.pyplot as plt
 
-basedir='/Users/poldrack/data/openfmri/melodic/'
+basedir='./data/'
 
-infodir='/Users/poldrack/data/openfmri/shared/'
-
-X=N.genfromtxt(basedir+'melodic_mix')
+X=N.genfromtxt(basedir+'melodic_mix_20comps')
 copedata=N.genfromtxt(basedir+'copedata.txt')
 
 usedata=N.zeros(len(copedata))
@@ -91,9 +89,12 @@ X=X[usedata==1,:]
 t=tsne(X,no_dims=2, initial_dims=15, perplexity=10.0, max_iter=1000)
 plt.clf()
 plt.scatter(t[:,0],t[:,1],s=0)  # create axes
+f=open(basedir+'tasklabels.txt','w')
 for i in range(len(t)):
     x,y=t[i,:]
     plt.text(x,y,'%d'%dstask[copedata[i,0]][copedata[i,1]]) #,color=colors[i])
-
+    f.write('%d\n'%dstask[copedata[i,0]][copedata[i,1]])
+    
+f.close()
 # print legend:
 plt.savefig(basedir+'tsne_fig.pdf',format='pdf')
