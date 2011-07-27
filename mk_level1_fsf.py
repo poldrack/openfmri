@@ -44,7 +44,7 @@ from openfmri_utils import *
 
 ## basedir='/corral/utexas/poldracklab/openfmri/shared/'
 
-def mk_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir):
+def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir):
 
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
@@ -54,7 +54,7 @@ def mk_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir):
     conditions=cond_key[tasknum].values()
 
 
-    stubfilename=basedir+'/design.fsf_stub'
+    stubfilename=basedir+'/design_level1.stub'
     modeldir=subdir+'/model/'
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
