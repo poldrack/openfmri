@@ -62,7 +62,7 @@ def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
     conditions=cond_key[tasknum].values()
     ncopes=len(conditions)+1
     
-    stubfilename=basedir+'/design_level3.stub'
+    stubfilename='/corral/utexas/poldracklab/code/poldrack/openfmri/design_level3.stub'
 
     for copenum in range(1,ncopes+1):
         outfilename='%s/cope%03d.fsf'%(modeldir,copenum)
@@ -82,14 +82,17 @@ def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
         outfile.write('\n\n### AUTOMATICALLY GENERATED PART###\n\n')
 
         outfile.write('set fmri(outputdir) "%s/cope%03d.gfeat"\n'%(modeldir,copenum))
-        outfile.write('set fmri(npts) %d\n'%nsubs) # number of runs
-        outfile.write('set fmri(multiple) %d\n'%nsubs) # number of runs
 
-
+        ngoodsubs=0
         for r in range(nsubs):
-            outfile.write('set feat_files(%d) "%s/%s/sub%03d/model/task%03d.gfeat/cope%d.feat"\n'%(int(r+1),basedir,taskid,r+1,tasknum,copenum))
-            outfile.write('set fmri(evg%d.1) 1\n'%int(r+1))
-            outfile.write('set fmri(groupmem.%d) 1\n'%int(r+1))
-
+            featfile='%s%s/sub%03d/model/task%03d.gfeat/cope%d.feat'%(basedir,taskid,r+1,tasknum,copenum)
+            if os.path.exists(featfile):
+                outfile.write('set feat_files(%d) "%s"\n'%(ngoodsubs+1,featfile))
+                outfile.write('set fmri(evg%d.1) 1\n'%int(ngoodsubs+1))
+                outfile.write('set fmri(groupmem.%d) 1\n'%int(ngoodsubs+1))
+                ngoodsubs+=1
+                
+        outfile.write('set fmri(npts) %d\n'%ngoodsubs) # number of runs
+        outfile.write('set fmri(multiple) %d\n'%ngoodsubs) # number of runs
 
         outfile.close()
