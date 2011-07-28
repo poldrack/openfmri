@@ -101,6 +101,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
     # loop through EVs
     convals_real=N.zeros(nevs*2)
     convals_orig=N.zeros(nevs)
+    empty_evs=[]
 
     for ev in range(len(conditions)):
         outfile.write('\n\nset fmri(evtitle%d) "%s"\n'%(ev+1,conditions[ev]))
@@ -111,6 +112,8 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
         else:
              outfile.write('set fmri(shape%d) 10\n'%(ev+1))
              print '%s is missing, using empty EV'%condfile
+             empty_evs.append(ev+1)
+             
         outfile.write('set fmri(convolve%d) 3\n'%(ev+1))
         outfile.write('set fmri(convolve_phase%d) 0\n'%(ev+1))
         outfile.write('set fmri(tempfilt_yn%d) 1\n'%(ev+1))
@@ -130,6 +133,12 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
             outfile.write('set fmri(con_orig%d.%d) %d\n'%(ev+1,evt+1,int(evt==ev)))
             if (evt==ev):
                 convals_orig[evt]=1
+                
+    if len(empty_evs)>0:
+        empty_ev_file=open('%s/behav/task%03d_run%03d/empty_evs.txt'%(subdir,tasknum,runnum),'w')
+        for eev in empty_evs:
+            empty_ev_file.write('%d\n'%eev)
+        empty_ev_file.close()
 
     # make one additional contrast across all conditions
     outfile.write('set fmri(conpic_real.%d) 1\n'%(ev+2))
