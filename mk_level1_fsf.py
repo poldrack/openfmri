@@ -54,7 +54,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
     conditions=cond_key[tasknum].values()
 
 
-    stubfilename=basedir+'/design_level1.stub'
+    stubfilename='/corral/utexas/poldracklab/code/poldrack/openfmri/design_level1.stub'
     modeldir=subdir+'/model/'
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
@@ -104,12 +104,18 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
 
     for ev in range(len(conditions)):
         outfile.write('\n\nset fmri(evtitle%d) "%s"\n'%(ev+1,conditions[ev]))
-        outfile.write('set fmri(shape%d) 3\n'%(ev+1))
+        condfile='%s/behav/task%03d_run%03d/cond%03d.txt'%(subdir,tasknum,runnum,ev+1)
+        if os.path.exists(condfile):
+            outfile.write('set fmri(shape%d) 3\n'%(ev+1))
+            outfile.write('set fmri(custom%d) "%s"\n'%(ev+1,condfile))
+        else:
+             outfile.write('set fmri(shape%d) 10\n'%(ev+1))
+             print '%s is missing, using empty EV'%condfile
         outfile.write('set fmri(convolve%d) 3\n'%(ev+1))
         outfile.write('set fmri(convolve_phase%d) 0\n'%(ev+1))
         outfile.write('set fmri(tempfilt_yn%d) 1\n'%(ev+1))
         outfile.write('set fmri(deriv_yn%d) 1\n'%(ev+1))
-        outfile.write('set fmri(custom%d) "%s/behav/task%03d_run%03d/cond%03d.txt"\n'%(ev+1,subdir,tasknum,runnum,ev+1))
+        
         for evn in range(nevs+1):
             outfile.write('set fmri(ortho%d.%d) 0\n'%(ev+1,evn))
         # make a T contrast for each EV
