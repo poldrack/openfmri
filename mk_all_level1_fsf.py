@@ -1,6 +1,6 @@
 """ mk_all_level1_fsf.py - make fsf files for all subjects
 
-USAGE: python mk_all_level1_fsf.py <name of dataset> <tr> <basedir - default is staged>
+USAGE: python mk_all_level1_fsf.py <name of dataset> <tr> <basedir - default is staged> <nonlinear - default=1>
 
 """
 
@@ -54,6 +54,11 @@ def main():
     else:
         basedir='/corral/utexas/poldracklab/openfmri/staged/'
 
+    nonlinear=1
+    if len(sys.argv)>4:
+        nonlinear=int(sys.argv[4])
+        if nonlinear==0:
+            print 'using linear registration'
 
 
     outfile=open('mk_all_level1_fsf.sh','w')
@@ -79,7 +84,7 @@ def main():
                 else:
                     use_inplane=0
                 print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
-                mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+                mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir,nonlinear)
 
     outfile.close()
 

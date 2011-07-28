@@ -44,7 +44,7 @@ from openfmri_utils import *
 
 ## basedir='/corral/utexas/poldracklab/openfmri/shared/'
 
-def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir):
+def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir,nonlinear=1):
 
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
@@ -76,10 +76,9 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
     output, errors = p.communicate()
     ntp=int(output.split('\n')[4].split()[1])
 
-    # now add custom lines
-
     outfile.write('\n\n### AUTOMATICALLY GENERATED PART###\n\n')
-
+    # now add custom lines
+    outfile.write( 'set fmri(regstandard_nonlinear_yn) %d\n'%nonlinear)
     outfile.write('set fmri(outputdir) "%s/model/task%03d_run%03d.feat"\n'%(subdir,tasknum,runnum))
     outfile.write('set feat_files(1) "%s/BOLD/task%03d_run%03d/bold_mcf_brain"\n'%(subdir,tasknum,runnum))
     if use_inplane==1:

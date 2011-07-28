@@ -55,13 +55,13 @@ def main():
 
 
 
-    outfile=open('mk_all_level2_fsf.sh','w')
+ #   outfile=open('mk_all_level2_fsf.sh','w')
 
     featdirs=[]
     subdirs={}
 
 
-    for root,dirs,files in os.walk(basedir):
+    for root,dirs,files in os.walk(basedir+taskid):
     #    for f in files:
             if root.split('/')[-1].rfind('.feat')>-1 and root.find(taskid)>-1:
                 featdirs.append(root)

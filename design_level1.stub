@@ -241,7 +241,6 @@ set fmri(regstandard_search) 90
 set fmri(regstandard_dof) 12
 
 # Do nonlinear registration from structural to standard space?
-set fmri(regstandard_nonlinear_yn) 1
 
 # Control nonlinear warp field resolution
 set fmri(regstandard_nonlinear_warpres) 10 
