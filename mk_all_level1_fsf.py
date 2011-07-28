@@ -1,4 +1,7 @@
 """ mk_all_level1_fsf.py - make fsf files for all subjects
+
+USAGE: python mk_all_level1_fsf.py <name of dataset> <tr> <basedir - default is staged>
+
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -26,37 +29,63 @@
 
 import os
 from mk_level1_fsf import *
-dataset='ds001'
-basedir='/corral/utexas/poldracklab/openfmri/staged/'
-outfile=open('mk_all_level1_fsf.sh','w')
 
-smoothing=6
-tr=2.0
-use_inplane=1
+import sys
 
-for root,dirs,files in os.walk(basedir):
-    for f in files:
-        if f.rfind('bold_mcf.nii.gz')>-1 and root.find(dataset)>-1:
-            f_split=root.split('/')
-            scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
-            taskid=f_split[6]
-            subnum=int(f_split[7].lstrip('sub'))
-            taskinfo=f_split[9].split('_')
-            tasknum=int(taskinfo[0].lstrip('task'))
-            runnum=int(taskinfo[1].lstrip('run'))
-            tr=float(load_scankey(scankey)['TR'])
-            # check for inplane
-            inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
-            if os.path.exists(inplane):
-                use_inplane=1
-            else:
-                use_inplane=0
-            print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
-            mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+def usage():
+    """Print the docstring and exit with error."""
+    sys.stdout.write(__doc__)
+    sys.exit(2)
 
-outfile.close()
+def main():
 
-print 'now run all feats using:'
-print "find ds*/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"
-            
+    if len(sys.argv)>2:
+        dataset=sys.argv[1]
+        tr=sys.argv[2]
+    else:
+        usage()
 
+
+    if len(sys.argv)>3:
+        basedir=sys.argv[3]
+        if not os.path.exists(basedir):
+            print 'basedir %s does not exist!'%basedir
+            sys.exit(1)
+    else:
+        basedir='/corral/utexas/poldracklab/openfmri/staged/'
+
+
+
+    outfile=open('mk_all_level1_fsf.sh','w')
+
+    smoothing=6
+    use_inplane=1
+
+    for root,dirs,files in os.walk(basedir+dataset):
+        for f in files:
+            if f.rfind('bold_mcf.nii.gz')>-1 and root.find(dataset)>-1:
+                f_split=root.split('/')
+                scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
+                taskid=f_split[6]
+                subnum=int(f_split[7].lstrip('sub'))
+                taskinfo=f_split[9].split('_')
+                tasknum=int(taskinfo[0].lstrip('task'))
+                runnum=int(taskinfo[1].lstrip('run'))
+                tr=float(load_scankey(scankey)['TR'])
+                # check for inplane
+                inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
+                if os.path.exists(inplane):
+                    use_inplane=1
+                else:
+                    use_inplane=0
+                print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+                mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+
+    outfile.close()
+
+    print 'now run all feats using:'
+    print "find ds*/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"
+
+
+if __name__ == '__main__':
+    main()
