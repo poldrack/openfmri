@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 """ mk_fsf.py - make first-level FSF model
+
+USAGE: mk_level1_fsf.py <taskid> <subnum> <tasknum> <runnum> <smoothing - mm> <use_inplane> <basedir> <nonlinear>
+
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -44,7 +47,7 @@ from openfmri_utils import *
 
 ## basedir='/corral/utexas/poldracklab/openfmri/shared/'
 
-def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir,nonlinear=1):
+def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1):
 
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
@@ -53,7 +56,13 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir,
 
     conditions=cond_key[tasknum].values()
 
-
+    scan_key=load_scankey(basedir+taskid+'/scan_key.txt')
+    tr=float(scan_key['TR'])
+    if scan_key.has_key('nskip'):
+        nskip=int(scan_key['nskip'])
+    else:
+        nskip=0
+        
     stubfilename='/corral/utexas/poldracklab/code/poldrack/openfmri/design_level1.stub'
     modeldir=subdir+'/model/'
     if not os.path.exists(modeldir):
@@ -79,6 +88,10 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir,
     outfile.write('\n\n### AUTOMATICALLY GENERATED PART###\n\n')
     # now add custom lines
     outfile.write( 'set fmri(regstandard_nonlinear_yn) %d\n'%nonlinear)
+    # Delete volumes
+    outfile.write('set fmri(ndelete) %d\n'%nskip)
+
+
     outfile.write('set fmri(outputdir) "%s/model/task%03d_run%03d.feat"\n'%(subdir,tasknum,runnum))
     outfile.write('set feat_files(1) "%s/BOLD/task%03d_run%03d/bold_mcf_brain"\n'%(subdir,tasknum,runnum))
     if use_inplane==1:

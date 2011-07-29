@@ -1,6 +1,6 @@
 """ mk_all_level1_fsf.py - make fsf files for all subjects
 
-USAGE: python mk_all_level1_fsf.py <name of dataset> <tr> <basedir - default is staged> <nonlinear - default=1>
+USAGE: python mk_all_level1_fsf.py <name of dataset> <basedir - default is staged> <nonlinear - default=1>
 
 """
 
@@ -39,15 +39,14 @@ def usage():
 
 def main():
 
-    if len(sys.argv)>2:
+    if len(sys.argv)>1:
         dataset=sys.argv[1]
-        tr=sys.argv[2]
     else:
         usage()
 
 
-    if len(sys.argv)>3:
-        basedir=sys.argv[3]
+    if len(sys.argv)>2:
+        basedir=sys.argv[2]
         if not os.path.exists(basedir):
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
@@ -55,8 +54,8 @@ def main():
         basedir='/corral/utexas/poldracklab/openfmri/staged/'
 
     nonlinear=1
-    if len(sys.argv)>4:
-        nonlinear=int(sys.argv[4])
+    if len(sys.argv)>3:
+        nonlinear=int(sys.argv[3])
         if nonlinear==0:
             print 'using linear registration'
 
@@ -84,12 +83,12 @@ def main():
                 else:
                     use_inplane=0
                 print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
-                mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir,nonlinear)
+                mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear)
 
     outfile.close()
 
     print 'now run all feats using:'
-    print "find ds*/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"
+    print "find %s/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"%taskid
 
 
 if __name__ == '__main__':

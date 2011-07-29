@@ -32,9 +32,6 @@ set fmri(featwatcher_yn) 0
 set fmri(sscleanup_yn) 0
 
 
-# Delete volumes
-set fmri(ndelete) 0
-
 # Perfusion tag/control order
 set fmri(tagfirst) 1
 
