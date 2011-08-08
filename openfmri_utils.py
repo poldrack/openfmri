@@ -49,6 +49,17 @@ def load_scankey(scankeyfile):
     f.close()
     return scankey
 
+def load_contrasts(contrastfile):
+    if not os.path.exists(contrastfile):
+        return {}
+    f=open(contrastfile)
+    contrasts={}
+    for l in f.readlines():
+        l_split=l.strip().split(' ')
+        contrasts[l_split[0]]=l_split[1:]
+    f.close()
+    return contrasts
+
 def check_featdir(featdir,verbose=0):
     if verbose==1:
         print 'checking %s'%featdir

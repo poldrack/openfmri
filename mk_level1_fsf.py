@@ -37,18 +37,18 @@ from openfmri_utils import *
 
 # create as a function that will be called by mk_all_fsf.py
 # just set these for testing
-## taskid='ds002'
-## subnum=1
-## tasknum=1
-## runnum=2
-## smoothing=6
-## tr=2.0
-## use_inplane=1
+taskid='ds103'
+subnum=1
+tasknum=1
+runnum=1
+smoothing=6
+use_inplane=0
+nonlinear=1
 
-## basedir='/corral/utexas/poldracklab/openfmri/shared/'
+basedir='/corral/utexas/poldracklab/openfmri/staged/'
 
-def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1):
-
+#def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1):
+if 1==1:
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
     # read the conditions_key file
@@ -56,6 +56,8 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
 
     conditions=cond_key[tasknum].values()
 
+    contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
+    
     scan_key=load_scankey(basedir+taskid+'/scan_key.txt')
     tr=float(scan_key['TR'])
     if scan_key.has_key('nskip'):
@@ -107,8 +109,8 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     outfile.write('set fmri(evs_orig) %d\n'%nevs)
     outfile.write('set fmri(evs_real) %d\n'%(2*nevs))
     outfile.write('set fmri(smooth) %d\n'%smoothing)
-    outfile.write('set fmri(ncon_orig) %d\n'%(len(conditions)+1))
-    outfile.write('set fmri(ncon_real) %d\n'%(len(conditions)+1))
+    outfile.write('set fmri(ncon_orig) %d\n'%(len(conditions)+1+len(contrasts)))
+    outfile.write('set fmri(ncon_real) %d\n'%(len(conditions)+1+len(contrasts)))
 
     # loop through EVs
     convals_real=N.zeros(nevs*2)
@@ -162,6 +164,30 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     for evt in range(nevs):
             outfile.write('set fmri(con_orig%d.%d) %d\n'%(ev+2,evt+1,convals_orig[evt]))
 
+    # add custom contrasts
+    if len(contrasts)>0:
+        print contrasts
+        contrastctr=ev+3;
+        for c in contrasts.iterkeys():
+            
+            outfile.write('set fmri(conpic_real.%d) 1\n'%contrastctr)
+            outfile.write('set fmri(conname_real.%d) "%s"\n'%(contrastctr,c))
+            outfile.write('set fmri(conname_orig.%d) "%s"\n'%(contrastctr,c))
+            cveclen=len(contrasts[c])
+            for evt in range(nevs*2):
+                if evt<cveclen:
+                    outfile.write('set fmri(con_real%d.%d) %s\n'%(contrastctr,evt+1,contrasts[c][evt]))
+                else:
+                    outfile.write('set fmri(con_real%d.%d) 0\n'%(contrastctr,evt+1))
+                    
+            for evt in range(nevs):
+                if evt<cveclen:
+                    outfile.write('set fmri(con_orig%d.%d) %s\n'%(contrastctr,evt+1,contrasts[c][evt]))
+                else:
+                    outfile.write('set fmri(con_orig%d.%d) 0\n'%(contrastctr,evt+1))
+
+            contrastctr+=1
+        
     skipnum=1+len(conditions)
     # do motion regressors
     for ev in range(6):
