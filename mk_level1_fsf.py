@@ -37,18 +37,29 @@ from openfmri_utils import *
 
 # create as a function that will be called by mk_all_fsf.py
 # just set these for testing
-taskid='ds103'
-subnum=1
-tasknum=1
-runnum=1
-smoothing=6
-use_inplane=0
-nonlinear=1
+## taskid='ds103'
+## subnum=1
+## tasknum=1
+## runnum=1
+## smoothing=6
+## use_inplane=0
+## nonlinear=1
 
-basedir='/corral/utexas/poldracklab/openfmri/staged/'
-
-#def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1):
-if 1==1:
+def main():
+    taskid=sys.argv[1]
+    subnum=int(sys.argv[2])
+    tasknum=int(sys.argv[3])
+    runnum=int(sys.argv[4])
+    smoothing=int(sys.argv[5])
+    use_inplane=int(sys.argv[6])
+    basedir=sys.argv[7]
+    nonlinear=int(sys.argv[8])
+                   
+    mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear)
+    
+def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1):
+#if 1==1:
+    
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
     # read the conditions_key file
@@ -216,3 +227,7 @@ if 1==1:
         for i in range(len(data)):
             pfile.write('%s\n'%data[i][p])
         pfile.close()
+
+
+if __name__ == '__main__':
+    main()
