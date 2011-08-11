@@ -1,3 +1,4 @@
+
 """openfmri_utils: utility functions for openfmri project
 """
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -33,7 +34,7 @@ def load_condkey(condkeyfile):
         l_s=l.strip().split(' ')
         t=int(l_s[0].replace('task',''))
         cond=int(l_s[1].replace('cond',''))
-        condname=l_s[2]
+        condname=' '.join(l_s[2:])
         if not cond_info.has_key(t):
             cond_info[t]={}
         cond_info[t][cond]=condname
