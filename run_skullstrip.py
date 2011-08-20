@@ -1,6 +1,5 @@
-""" run_skullstrip.py - run skull stripping using freesurfer
+""" run_ANTS.py - run ANTS stripping and registration
 """
-
 ## Copyright 2011, Russell Poldrack. All rights reserved.
 
 ## Redistribution and use in source and binary forms, with or without modification, are
@@ -24,26 +23,24 @@
 ## ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-
-import os
-dataset='ds001'
-
-basedir='/corral/utexas/poldracklab/openfmri/shared/'
+import os,sys
+dataset=sys.argv[1]
+if len(sys.argv)>2:
+    basedir=sys.argv[2]
+else:
+    basedir='/corral/utexas/poldracklab/openfmri/shared/'
+    
 outfile=open('run_skullstrip.sh','w')
-#subdir=basedir+'subdir'
-subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
 
 for root,dirs,files in os.walk(basedir):
+  if root.find(dataset)>-1:
     for f in files:
-        if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
-            f_split=root.split('/')
-            outfile.write('recon-all -autorecon1 -subjid %s_%s -sd %s\n'%(f_split[6],f_split[7],subdir))
+        if f.rfind('highres001.nii.gz')>-1:
+            outfile.write('skullstrip.py %s/%s\n'%(root,f))
 
 outfile.close()
 
             
-print 'now launch using:'
-print 'launch -s run_skullstrip.sh -n skullstrip -r 02:00:00'
-print 'NB: requires intel compiler (use "module swap gcc intel")'
+print 'now launch using: launch -s run_skullstrip.sh -n strip -r 00:20:00'
 
 

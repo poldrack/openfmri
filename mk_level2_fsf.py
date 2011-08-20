@@ -50,7 +50,9 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
 
     # read the conditions_key file
     cond_key=load_condkey(basedir+taskid+'/condition_key.txt')
-
+    addl_contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
+    n_addl_contrasts=len(addl_contrasts)
+    
     conditions=cond_key[tasknum].values()
     nruns=len(runs)
 
@@ -84,7 +86,7 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
     outfile.write('set fmri(outputdir) "%s/model/task%03d.gfeat"\n'%(subdir,tasknum))
     outfile.write('set fmri(npts) %d\n'%nruns) # number of runs
     outfile.write('set fmri(multiple) %d\n'%nruns) # number of runs
-    outfile.write('set fmri(ncopeinputs) %d\n'%int(len(cond_key[tasknum])+1)) # number of copes
+    outfile.write('set fmri(ncopeinputs) %d\n'%int(len(cond_key[tasknum])+1+n_addl_contrasts)) # number of copes
     
     for r in range(nruns):
         outfile.write('set feat_files(%d) "%s/%s/sub%03d/model/task%03d_run%03d.feat"\n'%(int(r+1),basedir,taskid,subnum,tasknum,runs[r]))
@@ -93,7 +95,7 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
 
     # need to figure out if any runs have empty EVs and leave them out
 
-    for c in range(len(cond_key[tasknum])+1):
+    for c in range(len(cond_key[tasknum])+1+n_addl_contrasts):
         if not c+1 in empty_evs:
             outfile.write('set fmri(copeinput.%d) 1\n'%int(c+1))
         else:

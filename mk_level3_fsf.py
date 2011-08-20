@@ -60,8 +60,10 @@ def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
 
     # figure out the number of copes
     conditions=cond_key[tasknum].values()
-    ncopes=len(conditions)+1
-    
+    addl_contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
+    n_addl_contrasts=len(addl_contrasts)
+    ncopes=len(conditions)+1+n_addl_contrasts
+   
     stubfilename='/corral/utexas/poldracklab/code/poldrack/openfmri/design_level3.stub'
 
     for copenum in range(1,ncopes+1):

@@ -25,13 +25,14 @@
 
 
 
-import os
-dataset='ds001'
+import os,sys
+#dataset='ds001'
+dataset=sys.argv[1]
 
 basedir='/corral/utexas/poldracklab/openfmri/staged/'
 outfile=open('run_copy_stripped.sh','w')
 #subdir=basedir+'subdir'
-subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
+subdir='/corral/utexas/poldracklab/openfmri/shared/subdir'
 
 
 for root,dirs,files in os.walk(basedir):

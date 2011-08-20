@@ -23,11 +23,16 @@
 ## ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-import os
-dataset='ds001'
+import os,sys
 
-basedir='/corral/utexas/poldracklab/openfmri/shared/'
-subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
+#dataset='ds001'
+dataset=sys.argv[1]
+if len(sys.argv)>2:
+  basedir=sys.argv[2]
+else:
+  basedir='/corral/utexas/poldracklab/openfmri/shared/'
+#subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
+subdir='/corral/utexas/poldracklab/openfmri/shared/subdir'
 outfile=open('fs_setup.sh','w')
 #subdir=basedir+'subdir'
 
