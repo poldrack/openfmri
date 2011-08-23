@@ -29,6 +29,7 @@ USAGE: python run_betfnc.py <name of dataset> <basedir - default is staged>
 
 import os
 import sys
+import launch_qsub
 
 def main():
 
@@ -43,23 +44,25 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/corral/utexas/poldracklab/openfmri/staged/'
+
+        basedir='/scratch/01329/poldrack/openfmri/staged/'
         
-    outfile=open('run_mcflirt.sh','w')
-
-
-    outfile=open('run_betfunc.sh','w')
-
+    outfile=open('run_betfunc_%s.sh'%ds,'w')
+    found_files=0
     for root,dirs,files in os.walk(basedir+ds):
         for f in files:
             if f.rfind('bold_mcf.nii.gz')>-1  and root.find(ds)>-1:
                 outfile.write('bet %s/%s %s/%s -F\n'%(root,f,root,f.replace('mcf','mcf_brain')))
-
+                found_files=1
     outfile.close()
 
+    if found_files>0:
+        print 'now launching using:'
+        print 'launch -s run_betfunc_%s.sh -n betfunc -r 00:10:00'%ds
+        launch_qsub.launch_qsub(script_name='run_betfunc_%s.sh'%ds,runtime='00:10:00',jobname='%sbf'%ds,email=False)
+    else:
+        print 'no files found to process'
 
-    print 'now launch using:'
-    print 'launch -s run_betfunc.sh -n betfunc -r 00:10:00'
 
 if __name__ == '__main__':
     main()
