@@ -25,7 +25,6 @@
 
 import os,sys
 
-#dataset='ds001'
 dataset=sys.argv[1]
 if len(sys.argv)>2:
   basedir=sys.argv[2]
