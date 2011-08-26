@@ -1,0 +1,17 @@
+Here is a brief overview of the automated analysis pipeline
+for the openfmri project:
+
+motion correction:
+run_mcflirt.py <subdir> <basedir>
+
+so for data in /scratch/01329/poldrack/openfmri/staged/ds105 the call would be:
+
+run_mcflirt.py ds105 /scratch/01329/poldrack/openfmri/staged/
+
+this automatically creates a script and sends it to the grid.
+
+
+functional brain extraction:
+
+run_betfunc.py  <subdir> <basedir>
+
