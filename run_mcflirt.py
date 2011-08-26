@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ run_mcflirt.py - run mcflirt on all data
 
 USAGE: python run_mcflirt.py <name of dataset> <basedir - default is staged>

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ run_betfunc.py - run bet on functional images
 
 USAGE: python run_betfnc.py <name of dataset> <basedir - default is staged>

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ mk_all_level1_fsf.py - make fsf files for all subjects
 
 USAGE: python mk_all_level1_fsf.py <name of dataset> <basedir - default is staged> <nonlinear - default=1>

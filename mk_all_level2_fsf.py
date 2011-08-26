@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ mk_all_level2_fsf.py - make level 2 fsf files for all subjects in a dataset
 USAGE: python mk_all_level2_fsf.py <name of dataset>  <basedir - default is staged>
 

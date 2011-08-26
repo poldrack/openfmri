@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ run_autorecon.py - run freesurfer
 
 USAGE: python run_autorecon.py <taskid> <autorecon level> <basedir> <subdir>

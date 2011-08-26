@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ fs_setup.py - set up directories for freesurfer analysis
 """
 ## Copyright 2011, Russell Poldrack. All rights reserved.

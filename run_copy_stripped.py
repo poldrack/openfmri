@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ run_copy_stripped.py - copy skull-stripped images from freesurfer dirs
 """
 
