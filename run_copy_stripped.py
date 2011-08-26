@@ -26,22 +26,44 @@
 
 
 import os,sys
-#dataset='ds001'
-dataset=sys.argv[1]
 
-basedir='/corral/utexas/poldracklab/openfmri/staged/'
+def usage():
+    """Print the docstring and exit with error."""
+    sys.stdout.write(__doc__)
+    sys.exit(2)
+
+if len(sys.argv)>1:
+    dataset=sys.argv[1]
+else:
+    usage()
+    
+if len(sys.argv)>2:
+    basedir=sys.argv[2]
+    if not os.path.exists(basedir):
+        print 'basedir %s does not exist!'%basedir
+        sys.exit(1)
+else:
+    basedir='/scratch/01329/poldrack/openfmri/staged/'
+ 
+if len(sys.argv)>3:
+    subdir=sys.argv[3]
+    if not os.path.exists(subdir):
+        print 'subdir %s does not exist!'%subdir
+        sys.exit(1)
+else:
+    subdir='/scratch/01329/poldrack/openfmri/subdir/'
+ 
+
 outfile=open('run_copy_stripped.sh','w')
-#subdir=basedir+'subdir'
-subdir='/corral/utexas/poldracklab/openfmri/shared/subdir'
 
 
 for root,dirs,files in os.walk(basedir):
     for f in files:
         if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
             f_split=root.split('/')
-            outfile.write('mri_convert --out_orientation LAS %s/%s_%s/mri/brainmask.mgz --reslice_like %s/highres.nii.gz  %s/highres_brain.nii\n'%(subdir,f_split[6],f_split[7],root,root))
-            outfile.write('gzip %s/highres_brain.nii\n'%root)
-            outfile.write('fslmaths %s/highres_brain.nii.gz -thr 1 -bin %s/highres_brain_mask.nii.gz\n'%(root,root))
+            outfile.write('mri_convert --out_orientation LAS %s/%s_%s/mri/brainmask.mgz --reslice_like %s/highres001.nii.gz  %s/highres001_brain.nii\n'%(subdir,f_split[6],f_split[7],root,root))
+            outfile.write('gzip %s/highres001_brain.nii\n'%root)
+            outfile.write('fslmaths %s/highres001_brain.nii.gz -thr 1 -bin %s/highres001_brain_mask.nii.gz\n'%(root,root))
 
 outfile.close()
 

@@ -25,14 +25,13 @@
 
 import os,sys
 
-#dataset='ds001'
 dataset=sys.argv[1]
 if len(sys.argv)>2:
   basedir=sys.argv[2]
 else:
-  basedir='/corral/utexas/poldracklab/openfmri/shared/'
-#subdir='/scratch/01329/poldrack/openfmri/shared/subdir'
-subdir='/corral/utexas/poldracklab/openfmri/shared/subdir'
+  basedir='/scratch/01329/poldrack/openfmri/shared/'
+subdir='/scratch/01329/poldrack/openfmri/subdir'
+#subdir='/corral/utexas/poldracklab/openfmri/shared/subdir'
 outfile=open('fs_setup.sh','w')
 #subdir=basedir+'subdir'
 
