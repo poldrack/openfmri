@@ -29,6 +29,7 @@ USAGE: python run_mcflirt.py <name of dataset> <basedir - default is staged>
 
 import os
 import sys
+import launch_qsub
 
 def usage():
     """Print the docstring and exit with error."""
@@ -48,9 +49,9 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/corral/utexas/poldracklab/openfmri/staged/'
+        basedir='/scratch/01329/poldrack/openfmri/staged/'
         
-    outfile=open('run_mcflirt.sh','w')
+    outfile=open('run_mcflirt_%s.sh'%ds,'w')
 
     for root,dirs,files in os.walk(basedir+ds):
         for f in files:
@@ -60,8 +61,9 @@ def main():
     outfile.close()
 
 
-    print 'now launch using:'
-    print 'launch -s run_mcflirt.sh -n mcflirt -r 00:30:00'
+    print 'now launching using:'
+    print 'launch -s run_mcflirt_%s.sh -n mcflirt -r 00:30:00'%ds
+    launch_qsub.launch_qsub(script_name='run_mcflirt_%s.sh'%ds,runtime='00:30:00',jobname='%smcf'%ds,email=False)
 
 
 if __name__ == '__main__':
