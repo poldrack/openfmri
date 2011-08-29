@@ -85,7 +85,7 @@ def main():
 
 
     print 'now launch using:'
-    print 'launch -s run_autorecon%d_%s.sh -n autorecon%d -r %s -c gcc'%(arlevel,dataset,arlevel,artimes[arlevel-1])
+    print 'launch -s run_autorecon%d_%s.sh -n %sar%d -r %s -c gcc'%(arlevel,dataset,dataset,arlevel,artimes[arlevel-1])
 
 
 if __name__ == '__main__':
