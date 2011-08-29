@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ run_copy_stripped.py - copy skull-stripped images from freesurfer dirs
 """
 
@@ -54,10 +55,10 @@ else:
     subdir='/scratch/01329/poldrack/openfmri/subdir/'
  
 
-outfile=open('run_copy_stripped.sh','w')
+outfile=open('run_copy_stripped_%s.sh'%dataset,'w')
 
 
-for root,dirs,files in os.walk(basedir):
+for root,dirs,files in os.walk(basedir+dataset):
     for f in files:
         if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
             f_split=root.split('/')
@@ -69,7 +70,7 @@ outfile.close()
 
             
 print 'now launch using:'
-print 'sh run_copy_stripped.sh'
+print 'sh run_copy_stripped_%s.sh'%dataset
 
 
 
