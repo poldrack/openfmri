@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """mk_all_level3_fsf.py - make level 3 fsf files
 USAGE: python mk_all_level3_fsf.py <name of dataset> <nsubs>  <basedir - default is staged>
 """
