@@ -38,6 +38,7 @@ outfile=open('fs_setup.sh','w')
 
 if not os.path.exists(basedir+dataset):
   print '%s/%s does not exist'%(basedir,dataset)
+  sys.exit(2)
   
 for root,dirs,files in os.walk(basedir+dataset):
   if root.find(dataset)>-1:
