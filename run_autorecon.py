@@ -33,6 +33,7 @@ autorecon2/3: full surface reconstruction
 
 import os
 import sys
+import launch_qsub
 
 def usage():
     """Print the docstring and exit with error."""
@@ -74,18 +75,19 @@ def main():
 
     outfile=open('run_autorecon%d_%s.sh'%(arlevel,dataset),'w')
 
-    for root,dirs,files in os.walk(basedir+dataset):
-        for f in files:
-            if f.rfind('highres001.nii.gz')>-1:
-                print 'found %s'%f
-                f_split=root.split('/')
-                outfile.write('recon-all -autorecon%d -subjid %s_%s -sd %s\n'%(arlevel,f_split[6],f_split[7],subdir))
+    for d in os.listdir(basedir+dataset):
+        if d[0:3]=='sub':
+            for m in os.listdir('%s/%s/anatomy/'%(basedir+dataset,d)):
+                if m=='highres001.nii.gz':
+                    subnum=int(d.replace('sub',''))
+                    outfile.write('recon-all -autorecon%d -subjid %s_sub%03d -sd %s\n'%(arlevel,dataset,subnum,subdir))
 
     outfile.close()
 
 
     print 'now launch using:'
     print 'launch -s run_autorecon%d_%s.sh -n %sar%d -r %s -c gcc'%(arlevel,dataset,dataset,arlevel,artimes[arlevel-1])
+    launch_qsub.launch_qsub(script_name='run_autorecon%d_%s.sh'%(arlevel,dataset),runtime=artimes[arlevel-1],jobname='%sar%d'%(dataset,arlevel),email=False)
 
 
 if __name__ == '__main__':
