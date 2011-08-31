@@ -50,11 +50,14 @@ def main():
         
     outfile=open('run_betfunc_%s.sh'%ds,'w')
     found_files=0
-    for root,dirs,files in os.walk(basedir+ds):
-        for f in files:
-            if f.rfind('bold_mcf.nii.gz')>-1  and root.find(ds)>-1:
-                outfile.write('bet %s/%s %s/%s -F\n'%(root,f,root,f.replace('mcf','mcf_brain')))
-                found_files=1
+    for d in os.listdir(basedir+ds):
+        if d[0:3]=='sub':
+            for bd in os.listdir('%s/%s/BOLD/'%(basedir+ds,d)):
+                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+ds,d,bd)):
+                  if m=='bold_mcf.nii.gz':
+                    root='%s/%s/BOLD/%s/'%(basedir+ds,d,bd)
+                    outfile.write('bet %s/%s %s/%s -F\n'%(root,m,root,m.replace('mcf','mcf_brain')))
+                    found_files=1
     outfile.close()
 
     if found_files>0:
