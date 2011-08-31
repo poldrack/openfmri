@@ -228,6 +228,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
             pfile.write('%s\n'%data[i][p])
         pfile.close()
 
+    return outfilename
 
 if __name__ == '__main__':
     main()

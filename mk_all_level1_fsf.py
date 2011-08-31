@@ -30,6 +30,7 @@ USAGE: python mk_all_level1_fsf.py <name of dataset> <basedir - default is stage
 
 import os
 from mk_level1_fsf import *
+import launch_qsub
 
 import sys
 
@@ -52,7 +53,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/corral/utexas/poldracklab/openfmri/staged/'
+        basedir='/scratch/01329/poldrack/openfmri/staged/'
 
     nonlinear=1
     if len(sys.argv)>3:
@@ -61,35 +62,39 @@ def main():
             print 'using linear registration'
 
 
-    outfile=open('mk_all_level1_fsf.sh','w')
+    outfile=open('mk_all_level1_%s.sh'%dataset,'w')
 
     smoothing=6
     use_inplane=1
 
-    for root,dirs,files in os.walk(basedir+dataset):
-        for f in files:
-            if f.rfind('bold_mcf.nii.gz')>-1 and root.find(dataset)>-1:
-                f_split=root.split('/')
-                scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
-                taskid=f_split[6]
-                subnum=int(f_split[7].lstrip('sub'))
-                taskinfo=f_split[9].split('_')
-                tasknum=int(taskinfo[0].lstrip('task'))
-                runnum=int(taskinfo[1].lstrip('run'))
-                tr=float(load_scankey(scankey)['TR'])
-                # check for inplane
-                inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
-                if os.path.exists(inplane):
-                    use_inplane=1
-                else:
-                    use_inplane=0
-                print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
-                mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear)
-
+    for d in os.listdir(basedir+dataset):
+        if d[0:3]=='sub':
+            for bd in os.listdir('%s/%s/BOLD/'%(basedir+dataset,d)):
+                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)):
+                  if m=='bold_mcf.nii.gz':
+                    root='%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)
+                    f_split=root.split('/')
+                    scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
+                    taskid=f_split[6]
+                    subnum=int(f_split[7].lstrip('sub'))
+                    taskinfo=f_split[9].split('_')
+                    tasknum=int(taskinfo[0].lstrip('task'))
+                    runnum=int(taskinfo[1].lstrip('run'))
+                    tr=float(load_scankey(scankey)['TR'])
+                    # check for inplane
+                    inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
+                    if os.path.exists(inplane):
+                        use_inplane=1
+                    else:
+                        use_inplane=0
+                    print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+                    fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear)
+                    outfile.write('feat %s\n'%fname)
     outfile.close()
 
-    print 'now run all feats using:'
+    print 'now launching all feats:'
     print "find %s/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"%taskid
+    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False)
 
 
 if __name__ == '__main__':
