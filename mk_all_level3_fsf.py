@@ -54,7 +54,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/corral/utexas/poldracklab/openfmri/staged/'
+        basedir='/scratch/01329/poldrack/openfmri/staged/'
 
 
 
