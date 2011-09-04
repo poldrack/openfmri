@@ -54,10 +54,13 @@ def main():
         
     outfile=open('run_mcflirt_%s.sh'%ds,'w')
 
-    for root,dirs,files in os.walk(basedir+ds):
-        for f in files:
-            if f.rfind('bold.nii.gz')>-1 and root.find(ds)>-1:
-                outfile.write('mcflirt -in %s/%s -sinc_final -plots\n'%(root,f))
+    for d in os.listdir(basedir+ds):
+        if d[0:3]=='sub':
+            for bd in os.listdir('%s/%s/BOLD/'%(basedir+ds,d)):
+                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+ds,d,bd)):
+                  if m=='bold.nii.gz':
+                      root='%s/%s/BOLD/%s/'%(basedir+ds,d,bd)
+                      outfile.write('mcflirt -in %s/%s -sinc_final -plots\n'%(root,m))
 
     outfile.close()
 
