@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 tbdir='/corral/utexas/poldracklab/openfmri/tarballs'
 
 import sys
