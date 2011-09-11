@@ -7,7 +7,7 @@ from run_shell_cmd import *
 
 def main():
     
-    atlasfile='/corral/utexas/poldracklab/data/roi_atlas/new_atlas.nii.gz'
+    atlasfile='/corral/utexas/poldracklab/data/roi_atlas/new_atlas2.nii.gz'
 
     datafile=sys.argv[1]
     featdir=sys.argv[2]
