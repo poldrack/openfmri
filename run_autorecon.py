@@ -61,7 +61,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/corral/utexas/poldracklab/openfmri/shared/'
+        basedir='/scratch/01329/poldrack/openfmri/staged/'
 
     if len(sys.argv)>4:
         subdir=sys.argv[4]
@@ -69,7 +69,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        subdir=basedir+'subdir'
+        subdir='/scratch/01329/poldrack/openfmri/subdir/'
         print 'assuming subdir: %s'%subdir
  
 
@@ -86,7 +86,7 @@ def main():
 
 
     print 'now launch using:'
-    print 'launch -s run_autorecon%d_%s.sh -n %sar%d -r %s -c gcc'%(arlevel,dataset,dataset,arlevel,artimes[arlevel-1])
+    print 'launch -s run_autorecon%d_%s.sh -n %sar%d -r %s'%(arlevel,dataset,dataset,arlevel,artimes[arlevel-1])
     launch_qsub.launch_qsub(script_name='run_autorecon%d_%s.sh'%(arlevel,dataset),runtime=artimes[arlevel-1],jobname='%sar%d'%(dataset,arlevel),email=False)
 
 
