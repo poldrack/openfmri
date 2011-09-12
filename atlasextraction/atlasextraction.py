@@ -1,10 +1,11 @@
+#!/usr/bin/env python
 """ atlasextraction.py: extract data for each ROI in an atlas image
 """
 import nibabel as nib
 import numpy as N
 import os,sys
 from run_shell_cmd import *
-from mvpa.misc.fsl.base import read_fsl_design
+#from mvpa.misc.fsl.base import read_fsl_design
 
 def mk_native_atlas(featdir,atlasfile,atlas_descriptor):
                     
@@ -37,34 +38,34 @@ def extract_roi_means(datafile,atlasdata,outfilename):
     return roidata
 
 
-#def main():
-if 1==1:
+def main():
+#if 1==1:
+    
     atlasfile='/work/01329/poldrack/code/poldrack/roi_atlas/sc_HO_atlas.nii.gz'
     atlas_descriptor='sc_HO'
     bsmethod='lsone'
-    #datafile=sys.argv[1]
-    #featdir=sys.argv[2]
-    #outfile=sys.argv[3]
-    featdirs=['/scratch/01329/poldrack/openfmri/shared/ds001/sub001/model/task001_run001.feat']
+    featdir=sys.argv[1]
+
     
+    nativeatlas=mk_native_atlas(featdir,atlasfile,atlas_descriptor)
+    atlas=nib.load(nativeatlas)
+    atlasdata=atlas.get_data()
 
-    for featdir in featdirs:
-        nativeatlas=mk_native_atlas(featdir,atlasfile,atlas_descriptor)
-        atlas=nib.load(nativeatlas)
-        atlasdata=atlas.get_data()
-        
-        design=read_fsl_design(featdir+'/design.fsf')
-
-        if not os.path.exists(featdir+'/betaseries'):
-            print 'no betaseries for %s'%featdir
-            continue
+    # extract roi data from betaseries
+    
+    if os.path.exists(featdir+'/betaseries'):
 
         bsfiles_all=os.listdir(featdir+'/betaseries')
         bsfiles=['%s/betaseries/%s'%(featdir,f) for f in bsfiles_all if f.find(bsmethod)>-1 and f.find('nii.gz')>-1]
+    #    print "files:"
+    #    print bsfiles
         for bsf in bsfiles:
             roidata=extract_roi_means(bsf,atlasdata,bsf.replace('.nii.gz','_%s.txt'%atlas_descriptor))
 
+    # now extract for residual
+    residfile=featdir+'/stats/res4d.nii.gz'
+    roidata_res4d=extract_roi_means(residfile,atlasdata,residfile.replace('.nii.gz','_%s.txt'%atlas_descriptor))
 
-#if __name__=='__main__':
-#    main()
+if __name__=='__main__':
+    main()
 
