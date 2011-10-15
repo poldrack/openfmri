@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """ atlasextraction.py: extract data for each ROI in an atlas image
+USAGE: atlasextraction.py <featdir> <descriptor> <atlasimage>
 """
 import nibabel as nib
 import numpy as N
@@ -41,12 +42,14 @@ def extract_roi_means(datafile,atlasdata,outfilename):
 def main():
 #if 1==1:
     
-    atlasfile='/work/01329/poldrack/code/poldrack/roi_atlas/sc_HO_atlas.nii.gz'
-    atlas_descriptor='sc_HO'
+    #atlasfile='/work/01329/poldrack/code/poldrack/roi_atlas/sc_HO_atlas.nii.gz'
+    #atlas_descriptor='sc_HO'
     bsmethod='lsone'
     featdir=sys.argv[1]
-
+    atlas_descriptor=sys.argv[2]
+    atlasfile=sys.argv[3]
     
+     
     nativeatlas=mk_native_atlas(featdir,atlasfile,atlas_descriptor)
     atlas=nib.load(nativeatlas)
     atlasdata=atlas.get_data()
@@ -59,6 +62,7 @@ def main():
         bsfiles=['%s/betaseries/%s'%(featdir,f) for f in bsfiles_all if f.find(bsmethod)>-1 and f.find('nii.gz')>-1]
     #    print "files:"
     #    print bsfiles
+
         for bsf in bsfiles:
             roidata=extract_roi_means(bsf,atlasdata,bsf.replace('.nii.gz','_%s.txt'%atlas_descriptor))
 

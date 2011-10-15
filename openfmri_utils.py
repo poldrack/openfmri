@@ -50,6 +50,18 @@ def load_scankey(scankeyfile):
     f.close()
     return scankey
 
+def load_contrastkey(contrastkeyfile):
+    f=open(contrastkeyfile)
+    contrastkey={}
+    for l in f.readlines():
+        l_split=l.strip().split(' ')
+        if not contrastkey.has_key(l_split[1]):
+            contrastkey[l_split[1]]={}
+
+        contrastkey[l_split[1]][l_split[2]]=l_split[3:]
+    f.close()
+    return contrastkey
+
 def load_contrasts(contrastfile):
     if not os.path.exists(contrastfile):
         return {}
@@ -57,7 +69,9 @@ def load_contrasts(contrastfile):
     contrasts={}
     for l in f.readlines():
         l_split=l.strip().split(' ')
-        contrasts[l_split[0]]=l_split[1:]
+        if not contrasts.has_key(l_split[0]):
+            contrasts[l_split[0]]={}
+        contrasts[l_split[0]][l_split[1]] = l_split[2:]
     f.close()
     return contrasts
 
@@ -113,3 +127,32 @@ def check_featdir(featdir,verbose=0):
     if feat_info['problem']==1:
         print 'PROBLEM: %s'%featdir
     return feat_info
+
+def load_fsl_design_con(featdir):
+    f=open(featdir+'/design.con','r')
+    l=f.readlines()
+    dcon={}
+    dcon['contrasts']={}
+    for line in l:
+        l_split=line.strip().split('\t')
+        if l_split[0].find('/ContrastName')==0:
+            cnum=int(l_split[0].replace('/ContrastName',''))
+            dcon['contrasts'][cnum]=l_split[1].replace('"','').replace(' ','')
+        if l_split[0].find('/Matrix')<0:
+            l_split[0]=l_split[0].lstrip('/')
+            dcon[l_split[0]]=l_split[1:]
+        else:
+            break
+
+    readcons=0
+    dcon['contrast_vals']=[]
+    for line in l:
+        l_split=line.strip().split('\t')
+        if l_split[0].find('/Matrix')>-1:
+            readcons=1
+            continue
+        if readcons==1:
+            dcon['contrast_vals'].append([float(x) for x in line.strip().split(' ')])
+
+    
+    return dcon

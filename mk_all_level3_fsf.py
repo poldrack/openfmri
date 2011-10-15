@@ -29,7 +29,7 @@ USAGE: python mk_all_level3_fsf.py <name of dataset> <nsubs>  <basedir - default
 
 import os
 from openfmri_utils import *
-
+import launch_qsub
 from mk_level3_fsf import *
 
 import sys
@@ -56,7 +56,8 @@ def main():
     else:
         basedir='/scratch/01329/poldrack/openfmri/staged/'
 
-
+    if not basedir[-1]=='/':
+        basedir=basedir+'/'
 
 
     featdirs=[]
@@ -68,14 +69,28 @@ def main():
     nsubs={taskid:numsub}
     taskid_list=nsubs.keys()
 
-
+    fsfnames=[]
+    
     for taskid in taskid_list:
       cond_key=load_condkey(basedir+taskid+'/condition_key.txt')
       ntasks=len(cond_key)
 
 
       for t in range(ntasks):
-        mk_level3_fsf(taskid,t+1,nsubs[taskid],basedir)
+        f=mk_level3_fsf(taskid,t+1,nsubs[taskid],basedir)
+        
+        for i in f:
+            fsfnames.append(i)
 
+    outfile=open('run_all_level3_%s.sh'%taskid,'w')
+    for f in fsfnames:
+          outfile.write('feat %s\n'%f)
+    outfile.close()
+
+    print 'now launching using:'
+    print 'launch -s run_all_level3_%s.sh -n %sl3 -r 01:00:00'%(taskid,taskid)
+    launch_qsub.launch_qsub(script_name='run_all_level3_%s.sh'%taskid,runtime='01:00:00',jobname='%sl3'%taskid,email=False)
+
+      
 if __name__ == '__main__':
     main()

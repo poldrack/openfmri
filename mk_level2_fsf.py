@@ -50,8 +50,12 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir):
 
     # read the conditions_key file
     cond_key=load_condkey(basedir+taskid+'/condition_key.txt')
-    addl_contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
-    n_addl_contrasts=len(addl_contrasts)
+    all_addl_contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
+    if all_addl_contrasts.has_key('task%03d'%tasknum):
+        addl_contrasts=all_addl_contrasts['task%03d'%tasknum]
+        n_addl_contrasts=len(addl_contrasts)
+    else:
+        n_addl_contrasts=0
     
     conditions=cond_key[tasknum].values()
     nruns=len(runs)

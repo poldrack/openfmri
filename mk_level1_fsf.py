@@ -67,8 +67,11 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
 
     conditions=cond_key[tasknum].values()
 
-    contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
-    
+    contrasts_all=load_contrasts(basedir+taskid+'/task_contrasts.txt')
+    contrasts=[]
+    if contrasts_all.has_key('task%03d'%tasknum):
+        contrasts=contrasts_all['task%03d'%tasknum]
+        
     scan_key=load_scankey(basedir+taskid+'/scan_key.txt')
     tr=float(scan_key['TR'])
     if scan_key.has_key('nskip'):
