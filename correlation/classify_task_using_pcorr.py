@@ -26,63 +26,31 @@
 
 
 
-from scikits.learn import svm
-from scikits.learn.linear_model import LogisticRegression
+from sklearn import svm
+from sklearn.linear_model import LogisticRegression
 import numpy as N
 import scipy.stats
 
-from scikits.learn.cross_val import LeaveOneOut
-from scikits.learn.cross_val import StratifiedKFold
-from scikits.learn import svm
+from sklearn.cross_validation import LeaveOneOut
+from sklearn.cross_validation import StratifiedKFold
 
-basedir='/corral/utexas/poldracklab/openfmri/shared'
 
-# note: these are changed a bit from the tsne example, because I could not use overall contrasts
+basedir='/scratch/01329/poldrack/openfmri/shared/correlations/'
 
-all_trials_cope={2:{1:1,2:1,3:1},3:{1:1},5:{1:1},6:{1:1},7:{1:1,2:1,3:1},8:{1:1,2:1},11:{1:1,2:1,3:1,4:1},101:{1:1},102:{1:3}}
+datastem='resid_sc_corr_run001'
+X=N.load(basedir+datastem+'.npy')
+f=open(basedir+datastem+'_labels.txt','r')
+labels=[x.strip() for x in f.readlines()]
+f.close()
 
-nsubs={'ds002':17,'ds003':13, 'ds005':16,'ds006':14,'ds007':21,'ds008':15,'ds011':14,'ds101':21,'ds102':26}
-labelctr=0
-subctr=0
-datafile=[]
-labels=[]
+# number the labels
 
-triu=N.triu_indices(309,1)  # this is for the new scatlas
-nfeatures=triu[0].shape[0]
+labelset=set(labels)
+labeldict={}
+for idx,val in enumerate(labelset):
+        labeldict[val]=idx+1
+Y=N.array([labeldict[x] for x in labels])
 
-tasksperstudy=[len(a) for a in all_trials_cope.itervalues()]
-nexamples=N.sum(N.asarray(tasksperstudy)*N.asarray(nsubs.values()))
-X=N.zeros((nexamples,nfeatures))
-print 'loading data...'
-
-for ds in all_trials_cope.iterkeys():
-    dscode='ds%03d'%ds
-    for task in all_trials_cope[ds].iterkeys():
-        copenum=all_trials_cope[ds][task]
-        labelctr=labelctr+1
-        for sub in range(1,nsubs[dscode]+1):
-            df='%s/%s/sub%03d/model/task%03d_run001.feat/betaseries/ev%d_lsone_scatlas__corr.npy'%(basedir,dscode,sub,task,copenum)
-            try:
-                subdata=N.load(df)
-            except:
-                print 'problem loading %s'%df
-                continue
-            print subdata.shape
-            if not subdata.shape:
-                print 'problem with %s'%df
-                continue
-            if subdata.shape[0]!=309:
-                print 'problem with %s'%df
-            else:
-                datafile.append(df)
-                labels.append(labelctr)
-                X[subctr,:]=subdata[triu]
-                subctr=subctr+1
-
-# fix data size to account for bad examples
-X=X[:subctr,:]
-
-Y=N.asarray(labels)
 
 print 'running classifier...'
 
@@ -95,7 +63,8 @@ foldctr=1
 for train, test in skf:
     print 'fold %d'%foldctr
     X_train, X_test, y_train, y_test = X[train], X[test], Y[train], Y[test]
-    clf=LogisticRegression(C=0.1,penalty='l1')
+ #   clf=svm.LinearSVC(C=1)
+    clf=LogisticRegression()
     clf.fit(X_train,y_train)
     predclass[test]=clf.predict(X_test)
     foldctr=foldctr+1
