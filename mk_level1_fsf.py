@@ -79,7 +79,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     else:
         nskip=0
         
-    stubfilename='/corral/utexas/poldracklab/code/poldrack/openfmri/design_level1.stub'
+    stubfilename='/work/01329/poldrack/code/poldrack/openfmri/design_level1.stub'
     modeldir=subdir+'/model/'
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
