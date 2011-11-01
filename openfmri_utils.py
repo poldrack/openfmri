@@ -25,6 +25,12 @@
 
 
 import os
+import numpy as N
+
+r2z = lambda r: 0.5*(N.log(1+r)-N.log(1-r))
+
+z2r = lambda z: (N.exp(2.0*z)-1)/(N.exp(2.0*z)+1)
+
 
 def load_condkey(condkeyfile):
 

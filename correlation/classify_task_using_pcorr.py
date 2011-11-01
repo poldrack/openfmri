@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-""" classify_task_using_pcorr.py - classify task in openfmri data using partial correlation of ROI regions
+"""
+run1 classification
+
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -26,67 +28,35 @@
 
 
 
-from sklearn import svm
-from sklearn.linear_model import LogisticRegression
+
 import numpy as N
-import scipy.stats
-
-from sklearn.cross_validation import LeaveOneOut
-from sklearn.cross_validation import StratifiedKFold
-
-
-basedir='/scratch/01329/poldrack/openfmri/shared/correlations/'
-
-datastem='resid_sc_corr_run001'
-X=N.load(basedir+datastem+'.npy')
-f=open(basedir+datastem+'_labels.txt','r')
-labels=[x.strip() for x in f.readlines()]
+from classifier_run import *
+import pickle
+f=open('bestparams_run2.pkl','rb')
+params=pickle.load(f)
 f.close()
 
-# number the labels
-
-labelset=set(labels)
-labeldict={}
-for idx,val in enumerate(labelset):
-        labeldict[val]=idx+1
-Y=N.array([labeldict[x] for x in labels])
+basedir='/scratch/01329/poldrack/openfmri/shared/correlations/'
+outputdir=basedir+'/resid_classifier/'
 
 
-print 'running classifier...'
+models=['sc_corr','sc_pcorr','sc_regpcorr','tomtom_corr','tomtom_pcorr','tomtom_regpcorr']
 
-#loo = LeaveOneOut(len(Y))
-skf=StratifiedKFold(Y,10)
+for m in models:
+    datastem='resid_%s_run001'%m
+    datafile=datastem+'.npy'
+    labelfile=datastem+'_labels.txt'
+    outputfile=outputdir+datastem+'_svm.pkl'
+    cmd='/work/01329/poldrack/code/poldrack/python/classifier_run.py -t LinearSVC -d %s -l %s -o %s -c %f --cv 8'%(datafile,labelfile,outputfile,params[m]['svm'])
+    print cmd
 
-predclass=N.zeros(len(Y))
+    outputfile=outputdir+datastem+'_rbf.pkl'
+    cmd='/work/01329/poldrack/code/poldrack/python/classifier_run.py -t SVC -d %s -l %s -o %s -c %f --cv 8 -g %f'%(datafile,labelfile,outputfile,params[m]['rbf']['C'],params[m]['rbf']['gamma'])
+    print cmd
 
-foldctr=1
-for train, test in skf:
-    print 'fold %d'%foldctr
-    X_train, X_test, y_train, y_test = X[train], X[test], Y[train], Y[test]
- #   clf=svm.LinearSVC(C=1)
-    clf=LogisticRegression()
-    clf.fit(X_train,y_train)
-    predclass[test]=clf.predict(X_test)
-    foldctr=foldctr+1
+    outputfile=outputdir+datastem+'_lr.pkl'
+    cmd='/work/01329/poldrack/code/poldrack/python/classifier_run.py -t LogisticRegression -d %s -l %s -o %s -c %f --cv 8'%(datafile,labelfile,outputfile,params[m]['lr'])
+    print cmd
 
-print 'Mean accuracy=%0.3f'%N.mean(predclass==Y)
 
-kjahsdf
 
-# randomize labels 1000 times and store accuracy
-nruns=500
-randacc=N.zeros(nruns)
-
-for r in range(nruns):
-    N.random.shuffle(Y)
-    for train, test in loo:
-        X_train, X_test, y_train, y_test = X[train], X[test], Y[train], Y[test]
-#        clf=LogisticRegression(C=1,penalty='l2')
-        clf=svm.LinearSVC()
-        clf.fit(X_train,y_train)
-        predclass[test]=clf.predict(X_test)
-    randacc[r]=N.mean(predclass==Y)
-    
-print 'Mean accuracy with shuffled labels=%0.3f'%N.mean(randacc)
-print 'Max accuracy with shuffled labels=%0.3f'%N.max(randacc)
-print '95 pct accuracy with shuffled labels=%0.3f'%scipy.stats.scoreatpercentile(randacc,95)

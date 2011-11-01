@@ -46,7 +46,6 @@ copenum=1
 basedir='/corral/utexas/poldracklab/openfmri/shared/'
 
 def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
-#if 1==1:
 
     groupdir='%s/%s/group'%(basedir,taskid)
     if not os.path.exists(groupdir):
@@ -69,7 +68,7 @@ def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
 
     ncopes=len(conditions)+1+n_addl_contrasts
    
-    stubfilename='/corral/utexas/poldracklab/code/poldrack/openfmri/design_level3.stub'
+    stubfilename='/work/01329/poldrack/code/poldrack/openfmri/design_level3.stub'
     fsfnames=[]
     for copenum in range(1,ncopes+1):
         outfilename='%s/cope%03d.fsf'%(modeldir,copenum)

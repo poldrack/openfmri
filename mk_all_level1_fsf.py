@@ -55,6 +55,9 @@ def main():
     else:
         basedir='/scratch/01329/poldrack/openfmri/staged/'
 
+    if not basedir[-1]=='/':
+        basedir=basedir+'/'
+        
     nonlinear=1
     if len(sys.argv)>3:
         nonlinear=int(sys.argv[3])
@@ -64,7 +67,7 @@ def main():
 
     outfile=open('mk_all_level1_%s.sh'%dataset,'w')
 
-    smoothing=6
+    smoothing=0
     use_inplane=1
 
     for d in os.listdir(basedir+dataset):
