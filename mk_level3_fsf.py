@@ -34,32 +34,25 @@ import os
 import subprocess as sub
 from openfmri_utils import *
 
-# create as a function that will be called by mk_all_fsf.py
-# just set these for testing
-taskid='ds002'
-nsubs=17
-tasknum=1
-## nruns=6
-#runs=[1,2]
-copenum=1
 
-basedir='/corral/utexas/poldracklab/openfmri/shared/'
+def mk_level3_fsf(taskid,tasknum,modelnum,basedir):
 
-def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
-
-    groupdir='%s/%s/group'%(basedir,taskid)
+    groupdir='%s%s/group/model%03d'%(basedir,taskid,modelnum)
     if not os.path.exists(groupdir):
         os.mkdir(groupdir)
-    modeldir='%s/%s/group/task%03d'%(basedir,taskid,tasknum)
+
+        
+    modeldir='%s%s/group/model%03d/task%03d'%(basedir,taskid,modelnum,tasknum)
     if not os.path.exists(modeldir):
         os.mkdir(modeldir)
 
+
     # read the conditions_key file
-    cond_key=load_condkey(basedir+taskid+'/condition_key.txt')
+    cond_key=load_condkey(basedir+taskid+'/models/model%03d/condition_key.txt'%modelnum)
 
     # figure out the number of copes
     conditions=cond_key[tasknum].values()
-    all_addl_contrasts=load_contrasts(basedir+taskid+'/task_contrasts.txt')
+    all_addl_contrasts=load_contrasts(basedir+taskid+'/models/model%03d/task_contrasts.txt'%modelnum)
     if all_addl_contrasts.has_key('task%03d'%tasknum):
         addl_contrasts=all_addl_contrasts['task%03d'%tasknum]
         n_addl_contrasts=len(addl_contrasts)
@@ -91,8 +84,11 @@ def mk_level3_fsf(taskid,tasknum,nsubs,basedir):
         outfile.write('set fmri(outputdir) "%s/cope%03d.gfeat"\n'%(modeldir,copenum))
 
         ngoodsubs=0
+        sublist=[x for x in os.listdir(basedir+taskid) if x.find('sub')==0]
+        nsubs=len(sublist)
+        
         for r in range(nsubs):
-            featfile='%s%s/sub%03d/model/task%03d.gfeat/cope%d.feat'%(basedir,taskid,r+1,tasknum,copenum)
+            featfile='%s%s/sub%03d/model/model%03d/task%03d.gfeat/cope%d.feat'%(basedir,taskid,r+1,modelnum,tasknum,copenum)
             if os.path.exists(featfile):
                 outfile.write('set feat_files(%d) "%s"\n'%(ngoodsubs+1,featfile))
                 outfile.write('set fmri(evg%d.1) 1\n'%int(ngoodsubs+1))

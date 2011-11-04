@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """mk_all_level3_fsf.py - make level 3 fsf files
-USAGE: python mk_all_level3_fsf.py <name of dataset> <nsubs>  <basedir - default is staged>
+USAGE: python mk_all_level3_fsf.py <name of dataset> <modelnum>  <basedir - default is pwd>
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -43,7 +43,7 @@ def main():
 
     if len(sys.argv)>2:
         taskid=sys.argv[1]
-        numsub=int(sys.argv[2])
+        modelnum=int(sys.argv[2])
     else:
         usage()
 
@@ -54,7 +54,8 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/scratch/01329/poldrack/openfmri/staged/'
+        basedir=os.path.abspath(os.curdir)
+
 
     if not basedir[-1]=='/':
         basedir=basedir+'/'
@@ -64,23 +65,16 @@ def main():
     subdirs={}
 
 
- 
- 
-    nsubs={taskid:numsub}
-    taskid_list=nsubs.keys()
+    cond_key=load_condkey(basedir+taskid+'/models/model%03d/condition_key.txt'%modelnum)
+    ntasks=len(cond_key)
+
+
+    for t in range(ntasks):
+        f=mk_level3_fsf(taskid,t+1,modelnum,basedir)
 
     fsfnames=[]
-    
-    for taskid in taskid_list:
-      cond_key=load_condkey(basedir+taskid+'/condition_key.txt')
-      ntasks=len(cond_key)
-
-
-      for t in range(ntasks):
-        f=mk_level3_fsf(taskid,t+1,nsubs[taskid],basedir)
-        
-        for i in f:
-            fsfnames.append(i)
+    for i in f:
+        fsfnames.append(i)
 
     outfile=open('run_all_level3_%s.sh'%taskid,'w')
     for f in fsfnames:

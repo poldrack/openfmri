@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """ mk_all_level1_fsf.py - make fsf files for all subjects
 
-USAGE: python mk_all_level1_fsf.py <name of dataset> <basedir - default is staged> <nonlinear - default=1>
+USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - default is staged> <nonlinear - default=1> <smoothing - default=0>
 
 """
 
@@ -41,26 +41,27 @@ def usage():
 
 def main():
 
-    if len(sys.argv)>1:
+    if len(sys.argv)>2:
         dataset=sys.argv[1]
+        modelnum=int(sys.argv[2])
     else:
         usage()
 
 
-    if len(sys.argv)>2:
-        basedir=sys.argv[2]
+    if len(sys.argv)>3:
+        basedir=sys.argv[3]
         if not os.path.exists(basedir):
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/scratch/01329/poldrack/openfmri/staged/'
+        basedir=os.path.abspath(os.curdir)
 
     if not basedir[-1]=='/':
         basedir=basedir+'/'
         
     nonlinear=1
-    if len(sys.argv)>3:
-        nonlinear=int(sys.argv[3])
+    if len(sys.argv)>4:
+        nonlinear=int(sys.argv[4])
         if nonlinear==0:
             print 'using linear registration'
 
@@ -68,6 +69,11 @@ def main():
     outfile=open('mk_all_level1_%s.sh'%dataset,'w')
 
     smoothing=0
+    if len(sys.argv)>5:
+        smoothing=int(sys.argv[5])
+ 
+
+
     use_inplane=1
 
     for d in os.listdir(basedir+dataset):
@@ -91,7 +97,7 @@ def main():
                     else:
                         use_inplane=0
                     print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
-                    fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear)
+                    fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
                     outfile.write('feat %s\n'%fname)
     outfile.close()
 

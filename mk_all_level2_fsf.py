@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """ mk_all_level2_fsf.py - make level 2 fsf files for all subjects in a dataset
-USAGE: python mk_all_level2_fsf.py <name of dataset>  <basedir - default is staged>
+USAGE: python mk_all_level2_fsf.py <name of dataset> <model num> <basedir - default is pwd>
 
 """
 
@@ -41,20 +41,23 @@ def usage():
 
 def main():
 
-    if len(sys.argv)>1:
+    if len(sys.argv)>2:
         taskid=sys.argv[1]
+        modelnum=int(sys.argv[2])
     else:
         usage()
 
 
-    if len(sys.argv)>2:
-        basedir=sys.argv[2]
+    if len(sys.argv)>3:
+        basedir=sys.argv[3]
         if not os.path.exists(basedir):
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/scratch/01329/poldrack/openfmri/staged/'
+        basedir=os.path.abspath(os.curdir)
 
+    if not basedir[-1]=='/':
+        basedir=basedir+'/'
 
     outfile=open('run_all_level2_%s.sh'%taskid,'w')
 
@@ -64,7 +67,7 @@ def main():
     
     for d in os.listdir(basedir+taskid):
         if d[0:3]=='sub':
-            for m in os.listdir('%s/%s/model/'%(basedir+taskid,d)):
+            for m in os.listdir('%s/%s/model/model%03d/'%(basedir+taskid,d,modelnum)):
                 if m[-5:]=='.feat':
                     featdirs.append(m)
                     fs=featdirs[-1]
@@ -79,7 +82,7 @@ def main():
 
     for s in subdirs.iterkeys():
               for t in subdirs[s].iterkeys():
-                fname=mk_level2_fsf(taskid,s,t,subdirs[s][t],basedir)
+                fname=mk_level2_fsf(taskid,s,t,subdirs[s][t],basedir,modelnum)
                 outfile.write('feat %s\n'%fname)
                 
     outfile.close()

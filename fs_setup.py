@@ -30,16 +30,21 @@ dataset=sys.argv[1]
 if len(sys.argv)>2:
   basedir=sys.argv[2]
 else:
-  basedir='/scratch/01329/poldrack/openfmri/staged/'
+  basedir=os.path.abspath(os.curdir)
+  
 subdir='/scratch/01329/poldrack/openfmri/subdir'
 #subdir='/corral/utexas/poldracklab/openfmri/shared/subdir'
 outfile=open('fs_setup.sh','w')
 #subdir=basedir+'subdir'
-
+if basedir[-1]~='/':
+  basedir=basedir+'/'
+  
 if not os.path.exists(basedir+dataset):
   print '%s/%s does not exist'%(basedir,dataset)
   sys.exit(2)
   
+for d in os.listdir(basedir+ds):
+  if d[0:3]=='sub':
 for root,dirs,files in os.walk(basedir+dataset):
   if root.find(dataset)>-1:
     for f in files:

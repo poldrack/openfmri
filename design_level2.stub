@@ -237,7 +237,7 @@ set fmri(reghighres_dof) 6
 set fmri(regstandard_yn) 1
 
 # Standard image
-set fmri(regstandard) "/corral/utexas/poldracklab/software_lonestar/fsl/data/standard/MNI152_T1_2mm_brain"
+set fmri(regstandard) "/work/01329/poldrack/software_lonestar/fsl/data/standard/MNI152_T1_2mm_brain"
 
 # Search space for registration to standard space
 # 0   : No search
