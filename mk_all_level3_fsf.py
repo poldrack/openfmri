@@ -66,15 +66,16 @@ def main():
 
 
     cond_key=load_condkey(basedir+taskid+'/models/model%03d/condition_key.txt'%modelnum)
-    ntasks=len(cond_key)
 
+    ntasks=len(cond_key)
+    print 'found %d tasks'%ntasks
+
+    fsfnames=[]
 
     for t in range(ntasks):
         f=mk_level3_fsf(taskid,t+1,modelnum,basedir)
-
-    fsfnames=[]
-    for i in f:
-        fsfnames.append(i)
+        for i in f:
+            fsfnames.append(i)
 
     outfile=open('run_all_level3_%s.sh'%taskid,'w')
     for f in fsfnames:
