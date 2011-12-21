@@ -1,0 +1,1 @@
+get_partialcorr.py sc_HO_neurosynth.txt sc_HO_neurosynth /scratch/01329/poldrack/openfmri/shared2/scatlas_goodcols.npy
