@@ -38,6 +38,8 @@ def load_condkey(condkeyfile):
     cond_info={}
     for l in f.readlines():
         l_s=l.strip().split(' ')
+        if len(l_s)<2:
+            continue
         t=int(l_s[0].replace('task',''))
         cond=int(l_s[1].replace('cond',''))
         condname=' '.join(l_s[2:])
