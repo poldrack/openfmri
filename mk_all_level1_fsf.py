@@ -80,7 +80,7 @@ def main():
         if d[0:3]=='sub':
             for bd in os.listdir('%s/%s/BOLD/'%(basedir+dataset,d)):
                 for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)):
-                  if m=='bold_mcf.nii.gz':
+                  if m=='bold_mcf_brain.nii.gz':
                     root='%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)
                     f_split=root.split('/')
                     scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
@@ -96,7 +96,7 @@ def main():
                         use_inplane=1
                     else:
                         use_inplane=0
-                    print 'mk_fsf("%s",%d,%d,%d,%d,%f,%d,"%s")'%(taskid,subnum,tasknum,runnum,smoothing,tr,use_inplane,basedir)
+                    print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
                     fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
                     outfile.write('feat %s\n'%fname)
     outfile.close()
