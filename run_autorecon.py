@@ -74,20 +74,21 @@ def main():
  
 
     outfile=open('run_autorecon%d_%s.sh'%(arlevel,dataset),'w')
-
+    cmdctr=0
     for d in os.listdir(basedir+dataset):
         if d[0:3]=='sub':
             for m in os.listdir('%s/%s/anatomy/'%(basedir+dataset,d)):
                 if m=='highres001.nii.gz':
                     subnum=int(d.replace('sub',''))
                     outfile.write('recon-all -autorecon%d -subjid %s_sub%03d -sd %s\n'%(arlevel,dataset,subnum,subdir))
+                    cmdctr+=1
 
     outfile.close()
 
 
     print 'now launch using:'
     print 'launch -s run_autorecon%d_%s.sh -n %sar%d -r %s'%(arlevel,dataset,dataset,arlevel,artimes[arlevel-1])
-    launch_qsub.launch_qsub(script_name='run_autorecon%d_%s.sh'%(arlevel,dataset),runtime=artimes[arlevel-1],jobname='%sar%d'%(dataset,arlevel),email=False)
+    launch_qsub.launch_qsub(script_name='run_autorecon%d_%s.sh'%(arlevel,dataset),runtime=artimes[arlevel-1],jobname='%sar%d'%(dataset,arlevel),email=False,parenv='1way',ncores=cmdctr*12)
 
 
 if __name__ == '__main__':
