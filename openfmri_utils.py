@@ -37,7 +37,10 @@ def load_condkey(condkeyfile):
     f=open(condkeyfile)
     cond_info={}
     for l in f.readlines():
-        l_s=l.strip().split(' ')
+        if l.find('\t'):
+            l_s=l.strip().split('\t')
+        else:
+            l_s=l.strip().split(' ')
         if len(l_s)<2:
             continue
         t=int(l_s[0].replace('task',''))
