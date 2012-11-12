@@ -68,6 +68,19 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
 
     conditions=cond_key[tasknum].values()
 
+    # check for orthogonalization file
+    orth={}
+    orthfile=basedir+taskid+'/models/model%03d/orthogonalize.txt'%modelnum
+    if os.path.exists(orthfile):
+        f=open(orthfile)
+        for l in f.readlines():
+            orth_tasknum=int(l.split()[0].replace('task',''))
+            if orth_tasknum==tasknum:
+                orth[int(l.split()[1])]=int(l.split()[2])
+        f.close()
+
+
+    
     contrasts_all=load_contrasts(basedir+taskid+'/models/model%03d/task_contrasts.txt'%modelnum)
     contrasts=[]
     if contrasts_all.has_key('task%03d'%tasknum):
@@ -113,10 +126,10 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
 
 
     outfile.write('set fmri(outputdir) "%s/model/model%03d/task%03d_run%03d.feat"\n'%(subdir,modelnum,tasknum,runnum))
-    outfile.write('set feat_files(1) "%s/BOLD/task%03d_run%03d/bold_mcf_brain"\n'%(subdir,tasknum,runnum))
+    outfile.write('set feat_files(1) "%s/BOLD/task%03d_run%03d/bold_mcf_brain.nii.gz"\n'%(subdir,tasknum,runnum))
     if use_inplane==1:
         outfile.write('set fmri(reginitial_highres_yn) 1\n')
-        outfile.write('set initial_highres_files(1) "%s/anatomy/inplane001_brain"\n'%subdir)
+        outfile.write('set initial_highres_files(1) "%s/anatomy/inplane001_brain.nii.gz"\n'%subdir)
     else:
         outfile.write('set fmri(reginitial_highres_yn) 0\n')
 
@@ -150,11 +163,26 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
         outfile.write('set fmri(convolve_phase%d) 0\n'%(ev+1))
         outfile.write('set fmri(tempfilt_yn%d) 1\n'%(ev+1))
         outfile.write('set fmri(deriv_yn%d) 1\n'%(ev+1))
+
+        # first write the orth flag for zero, which seems to be turned on whenever
+        # anything is orthogonalized
         
-        for evn in range(nevs+1):
-            outfile.write('set fmri(ortho%d.%d) 0\n'%(ev+1,evn))
+        if orth.has_key(ev+1):
+                outfile.write('set fmri(ortho%d.0) 1\n'%int(ev+1))
+        else:
+                outfile.write('set fmri(ortho%d.0) 0\n'%int(ev+1))
+        
+        for evn in range(1,nevs+1):
+            if orth.has_key(ev+1):
+                if orth[ev+1]==evn:
+                    outfile.write('set fmri(ortho%d.%d) 1\n'%(ev+1,evn))
+                else:
+                    outfile.write('set fmri(ortho%d.%d) 0\n'%(ev+1,evn))
+            else:
+                outfile.write('set fmri(ortho%d.%d) 0\n'%(ev+1,evn))
         # make a T contrast for each EV
         outfile.write('set fmri(conpic_real.%d) 1\n'%(ev+1))
+        outfile.write('set fmri(conpic_orig.%d) 1\n'%(ev+1))
         outfile.write('set fmri(conname_real.%d) "%s"\n'%(ev+1,conditions[ev]))
         outfile.write('set fmri(conname_orig.%d) "%s"\n'%(ev+1,conditions[ev]))
         for evt in range(nevs*2):

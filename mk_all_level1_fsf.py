@@ -80,6 +80,7 @@ def main():
         if d[0:3]=='sub':
             for bd in os.listdir('%s/%s/BOLD/'%(basedir+dataset,d)):
                 for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)):
+                    # TBD: add checking to handle case with no viable data
                   if m=='bold_mcf_brain.nii.gz':
                     root='%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)
                     f_split=root.split('/')
