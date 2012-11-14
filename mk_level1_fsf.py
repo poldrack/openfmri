@@ -81,14 +81,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
 
     # check for QA dir
     qadir='%s/BOLD/task%03d_run%03d/QA'%(subdir,tasknum,runnum)
-    use_fd=0
-    use_dvars=0
-    if os.path.exists(os.path.join(qadir,'fd.txt')):
-        use_fd=1
-        print 'using FD'
-    if os.path.exists(os.path.join(qadir,'dvars.txt')):
-        use_dvars=1
-        print 'using DVARS'
+
     
     contrasts_all=load_contrasts(basedir+taskid+'/models/model%03d/task_contrasts.txt'%modelnum)
     contrasts=[]
@@ -145,7 +138,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     outfile.write('set highres_files(1) "%s/anatomy/highres001_brain"\n'%subdir)
     outfile.write('set fmri(npts) %d\n'%ntp)
     outfile.write('set fmri(tr) %0.2f\n'%tr)
-    nevs=len(conditions)+6+use_fd+use_dvars
+    nevs=len(conditions)
     outfile.write('set fmri(evs_orig) %d\n'%nevs)
     outfile.write('set fmri(evs_real) %d\n'%(2*nevs))
     outfile.write('set fmri(smooth) %d\n'%smoothing)
@@ -242,59 +235,19 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
                     outfile.write('set fmri(con_orig%d.%d) 0\n'%(contrastctr,evt+1))
 
             contrastctr+=1
-        
-    skipnum=1+len(conditions)
-    # do motion regressors
-    for ev in range(6):
-        outfile.write('\n\nset fmri(evtitle%d) "motpar%d"\n'%(ev+skipnum,ev+1))
-        outfile.write('set fmri(shape%d) 2\n'%(ev+skipnum))
-        outfile.write('set fmri(convolve%d) 0\n'%(ev+skipnum))
-        outfile.write('set fmri(convolve_phase%d) 0\n'%(ev+skipnum))
-        outfile.write('set fmri(tempfilt_yn%d) 1\n'%(ev+skipnum))
-        outfile.write('set fmri(deriv_yn%d) 1\n'%(ev+skipnum))
-        outfile.write('set fmri(custom%d) "%s/BOLD/task%03d_run%03d/bold_mcf.par.%d"\n'%(ev+skipnum,subdir,tasknum,runnum,ev+1))
-        for evn in range(nevs+1):
-            outfile.write('set fmri(ortho%d.%d) 0\n'%(ev+skipnum,evn))
 
-    evctr=ev+skipnum+1
-    if use_fd==1:
-        outfile.write('\n\nset fmri(evtitle%d) "FD"\n'%evctr)
-        outfile.write('set fmri(shape%d) 2\n'%evctr)
-        outfile.write('set fmri(convolve%d) 0\n'%evctr)
-        outfile.write('set fmri(convolve_phase%d) 0\n'%evctr)
-        outfile.write('set fmri(tempfilt_yn%d) 1\n'%evctr)
-        outfile.write('set fmri(deriv_yn%d) 0\n'%evctr)
-        outfile.write('set fmri(custom%d) "%s/BOLD/task%03d_run%03d/QA/fd.txt"\n'%(evctr,subdir,tasknum,runnum))
-        for evn in range(nevs+1):
-            outfile.write('set fmri(ortho%d.%d) 0\n'%(evctr,evn))
-    evctr+=1
-    if use_dvars==1:
-        outfile.write('\n\nset fmri(evtitle%d) "DVARS"\n'%evctr)
-        outfile.write('set fmri(shape%d) 2\n'%evctr)
-        outfile.write('set fmri(convolve%d) 0\n'%evctr)
-        outfile.write('set fmri(convolve_phase%d) 0\n'%evctr)
-        outfile.write('set fmri(tempfilt_yn%d) 1\n'%evctr)
-        outfile.write('set fmri(deriv_yn%d) 0\n'%evctr)
-        outfile.write('set fmri(custom%d) "%s/BOLD/task%03d_run%03d/QA/fd.txt"\n'%(evctr,subdir,tasknum,runnum))
-        for evn in range(nevs+1):
-            outfile.write('set fmri(ortho%d.%d) 0\n'%(evctr,evn))
-  
+    # Add confound EVs text file
+    confoundfile="%s/BOLD/task%03d_run%03d/QA/confound.txt"%(subdir,tasknum,runnum)
+    if os.path.exists(confoundfile):
+        outfile.write('set fmri(confoundevs) 1\n')
+        outfile.write('set confoundev_files(1) "%s"\n'%confoundfile)
+    else:
+        outfile.write('set fmri(confoundevs) 0\n')
+        
+        
+
         
     outfile.close()
-
-    # create the motion files
-    motparfile='%s/BOLD/task%03d_run%03d/bold_mcf.par'%(subdir,tasknum,runnum)
-    mpf=open(motparfile,'r')
-
-
-    data = [line.split() for line in mpf]
-    mpf.close()
-
-    for p in range(6):
-        pfile=open('%s.%s'%(motparfile,p+1),'w')
-        for i in range(len(data)):
-            pfile.write('%s\n'%data[i][p])
-        pfile.close()
 
     return outfilename
 
