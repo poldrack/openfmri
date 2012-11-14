@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-""" run_mcflirt.py - run mcflirt on all data
+""" run_qa.py - run qa on all data
 
-USAGE: python run_mcflirt.py <name of dataset> <basedir - default is staged>
+USAGE: python run_qa.py <name of dataset> <basedir - default is staged>
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -31,6 +31,7 @@ USAGE: python run_mcflirt.py <name of dataset> <basedir - default is staged>
 import os
 import sys
 import launch_qsub
+from openfmri_utils import load_scankey
 
 def usage():
     """Print the docstring and exit with error."""
@@ -51,23 +52,26 @@ def main():
             sys.exit(1)
     else:
         basedir='/scratch/01329/poldrack/openfmri/staged/'
-        
-    outfile=open('run_mcflirt_%s.sh'%ds,'w')
+
+    sk=load_scankey(basedir+ds+'/scan_key.txt')
+    TR=sk['TR']
+    
+    outfile=open('run_qa_%s.sh'%ds,'w')
 
     for d in os.listdir(basedir+ds):
         if d[0:3]=='sub':
             for bd in os.listdir('%s/%s/BOLD/'%(basedir+ds,d)):
                 for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+ds,d,bd)):
-                  if m=='bold.nii.gz':
+                  if m=='bold_mcf.nii.gz':
                       root='%s/%s/BOLD/%s/'%(basedir+ds,d,bd)
-                      outfile.write('mcflirt -in %s/%s -sinc_final -plots\n'%(root,m))
+                      outfile.write('fmriqa.py %s/%s %s\n'%(root,m,sk['TR']))
 
     outfile.close()
 
 
     print 'now launching using:'
-    print 'launch -s run_mcflirt_%s.sh -n mcflirt -r 00:30:00'%ds
-    launch_qsub.launch_qsub(script_name='run_mcflirt_%s.sh'%ds,runtime='00:30:00',jobname='%smcf'%ds,email=False)
+    print 'launch -s run_qa_%s.sh -n qa -r 00:30:00'%ds
+    launch_qsub.launch_qsub(script_name='run_qa_%s.sh'%ds,runtime='00:30:00',jobname='%sqa'%ds,email=False)
 
 
 if __name__ == '__main__':
