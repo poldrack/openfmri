@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """ mk_all_level2_fsf.py - make level 2 fsf files for all subjects in a dataset
-USAGE: python mk_all_level2_fsf.py <name of dataset> <model num> <basedir - default is pwd>
+USAGE: python mk_all_level2_fsf.py <name of dataset> <model num> <basedir - default is pwd> <task num - default is all>
 
 """
 
@@ -56,6 +56,12 @@ def main():
     else:
         basedir=os.path.abspath(os.curdir)
 
+    if len(sys.argv)>4:
+        task_spec=int(sys.argv[4])
+        print 'setting task spec to %d'%task_spec
+    else:
+        task_spec=0
+        
     if not basedir[-1]=='/':
         basedir=basedir+'/'
 
@@ -67,7 +73,9 @@ def main():
     
     for d in os.listdir(basedir+taskid):
         if d[0:3]=='sub':
-            for m in os.listdir('%s/%s/model/model%03d/'%(basedir+taskid,d,modelnum)):
+            #print 'testing %s/%s/model/model%03d/'%(basedir+taskid,d,modelnum)
+            if os.path.exists('%s/%s/model/model%03d/'%(basedir+taskid,d,modelnum)):
+              for m in os.listdir('%s/%s/model/model%03d/'%(basedir+taskid,d,modelnum)):
                 if m[-5:]=='.feat':
                     featdirs.append(m)
                     fs=featdirs[-1]
@@ -76,14 +84,20 @@ def main():
                         subdirs[subnum]={}
                     runnum=int(fs.split('_')[1].split('.')[0].replace('run',''))
                     tasknum=int(fs.split('_')[0].replace('task',''))
+                    if (task_spec>0) and (not task_spec==tasknum):
+                        print 'skipping tasknum %d (task_spec %d)'%(tasknum,task_spec)
+                        continue
                     if not subdirs[subnum].has_key(tasknum):
                         subdirs[subnum][tasknum]=[]
                     subdirs[subnum][tasknum].append(runnum)
+    #print subdirs
 
     for s in subdirs.iterkeys():
               for t in subdirs[s].iterkeys():
-                fname=mk_level2_fsf(taskid,s,t,subdirs[s][t],basedir,modelnum)
-                outfile.write('feat %s\n'%fname)
+                  #print 'testing %s/%s/sub%03d/model/model%03d/'%(basedir,taskid,s,modelnum)
+                  if os.path.exists('%s/%s/sub%03d/model/model%03d/'%(basedir,taskid,s,modelnum)):
+                      fname=mk_level2_fsf(taskid,s,t,subdirs[s][t],basedir,modelnum)
+                      outfile.write('feat %s\n'%fname)
                 
     outfile.close()
 

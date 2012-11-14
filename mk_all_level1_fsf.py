@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """ mk_all_level1_fsf.py - make fsf files for all subjects
 
-USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - default is staged> <nonlinear - default=1> <smoothing - default=0>
+USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - default is staged> <nonlinear - default=1> <smoothing - default=0> <tasknum - default to all>
 
 """
 
@@ -72,6 +72,10 @@ def main():
     if len(sys.argv)>5:
         smoothing=int(sys.argv[5])
  
+    tasknum_spec=0
+    if len(sys.argv)>6:
+        tasknum_spec=int(sys.argv[6])
+ 
 
 
     use_inplane=1
@@ -89,6 +93,8 @@ def main():
                     subnum=int(f_split[7].lstrip('sub'))
                     taskinfo=f_split[9].split('_')
                     tasknum=int(taskinfo[0].lstrip('task'))
+                    if (tasknum_spec>0) and not (tasknum==tasknum_spec):
+                        continue
                     runnum=int(taskinfo[1].lstrip('run'))
                     tr=float(load_scankey(scankey)['TR'])
                     # check for inplane
@@ -104,7 +110,12 @@ def main():
 
     print 'now launching all feats:'
     print "find %s/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"%taskid
-    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False)
+    f=open('mk_all_level1_%s.sh'%dataset)
+    l=f.readlines()
+    f.close()
+    njobs=len(l)
+    ncores=(njobs/2)*12
+    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv='2way',ncores=ncores)
 
 
 if __name__ == '__main__':
