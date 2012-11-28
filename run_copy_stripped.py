@@ -44,7 +44,7 @@ if len(sys.argv)>2:
         print 'basedir %s does not exist!'%basedir
         sys.exit(1)
 else:
-    basedir='/scratch/01329/poldrack/openfmri/staged/'
+    basedir='/corral-repl/utexas/poldracklab/openfmri/subdir/'
  
 if len(sys.argv)>3:
     subdir=sys.argv[3]
@@ -52,7 +52,7 @@ if len(sys.argv)>3:
         print 'subdir %s does not exist!'%subdir
         sys.exit(1)
 else:
-    subdir='/scratch/01329/poldrack/openfmri/subdir/'
+    subdir='/corral-repl/utexas/poldracklab/openfmri/subdir/'
  
 
 outfile=open('run_copy_stripped_%s.sh'%dataset,'w')

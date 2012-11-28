@@ -42,7 +42,7 @@ def usage():
 
 def main():
 
-    artimes=['02:00:00','12:00:00','24:00:00']
+    artimes=['08:00:00','12:00:00','24:00:00']
 
     if len(sys.argv)>1:
         dataset=sys.argv[1]
@@ -61,7 +61,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/scratch/01329/poldrack/openfmri/staged/'
+        basedir='/corral-repl/utexas/poldracklab/openfmri/staged/'
 
     if len(sys.argv)>4:
         subdir=sys.argv[4]
@@ -69,7 +69,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        subdir='/scratch/01329/poldrack/openfmri/subdir/'
+        subdir='/corral-repl/utexas/poldracklab/openfmri/subdir/'
         print 'assuming subdir: %s'%subdir
  
 
