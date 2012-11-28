@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """mk_all_level3_fsf.py - make level 3 fsf files
-USAGE: python mk_all_level3_fsf.py <name of dataset> <modelnum>  <basedir - default is pwd>
+USAGE: python mk_all_level3_fsf.py <name of dataset> <modelnum>  <basedir - default is pwd> <tasknum -default is all>
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -56,11 +56,20 @@ def main():
     else:
         basedir=os.path.abspath(os.curdir)
 
+    if len(sys.argv)>4:
+        tasknum=int(sys.argv[4])
+    else:
+        tasknum=0
+
 
     if not basedir[-1]=='/':
         basedir=basedir+'/'
 
-
+    if not os.path.exists(os.path.join(basedir,taskid,'group')):
+        os.mkdir(os.path.join(basedir,taskid,'group'))
+    if not os.path.exists(os.path.join(basedir,taskid,'group/model%03d'%modelnum)):
+        os.mkdir(os.path.join(basedir,taskid,'group/model%03d'%modelnum))
+        
     featdirs=[]
     subdirs={}
 
@@ -71,9 +80,13 @@ def main():
     print 'found %d tasks'%ntasks
 
     fsfnames=[]
-
-    for t in range(ntasks):
-        f=mk_level3_fsf(taskid,t+1,modelnum,basedir)
+    if tasknum==0:
+        tasks=range(1,ntasks+1)
+    else:
+        tasks=[tasknum]
+        
+    for t in tasks:
+        f=mk_level3_fsf(taskid,t,modelnum,basedir)
         for i in f:
             fsfnames.append(i)
 
