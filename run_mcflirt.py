@@ -50,7 +50,7 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/scratch/01329/poldrack/openfmri/staged/'
+        basedir='/corral-repl/utexas/poldracklab/openfmri/staged/'
         
     outfile=open('run_mcflirt_%s.sh'%ds,'w')
 
