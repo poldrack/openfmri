@@ -248,9 +248,6 @@ set fmri(paradigm_hp) 100
 # Number of lower-level copes feeding into higher-level analysis
 set fmri(ncopeinputs) 0
 
-# Add confound EVs text file
-set fmri(confoundevs) 0
-
 
 
 # Contrast & F-tests mode
