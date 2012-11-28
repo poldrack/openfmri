@@ -37,10 +37,7 @@ def load_condkey(condkeyfile):
     f=open(condkeyfile)
     cond_info={}
     for l in f.readlines():
-        if l.find('\t'):
-            l_s=l.strip().split('\t')
-        else:
-            l_s=l.strip().split(' ')
+        l_s=l.strip().replace('\t',' ').split(' ')
         if len(l_s)<2:
             continue
         t=int(l_s[0].replace('task',''))
@@ -79,7 +76,7 @@ def load_contrasts(contrastfile):
     f=open(contrastfile)
     contrasts={}
     for l in f.readlines():
-        l_split=l.strip().split(' ')
+        l_split=l.strip().replace('\t',' ').split(' ')
         if not contrasts.has_key(l_split[0]):
             contrasts[l_split[0]]={}
         contrasts[l_split[0]][l_split[1]] = l_split[2:]
