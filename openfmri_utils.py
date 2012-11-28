@@ -58,6 +58,15 @@ def load_scankey(scankeyfile):
     f.close()
     return scankey
 
+def load_taskkey(taskkeyfile):
+    f=open(taskkeyfile)
+    taskkey={}
+    for l in f.readlines():
+        l_split=l.strip().split(' ')
+        taskkey[l_split[0]]='_'.join(l_split[1:])
+    f.close()
+    return taskkey
+
 def load_contrastkey(contrastkeyfile):
     f=open(contrastkeyfile)
     contrastkey={}
