@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-tbdir='/scratch/01329/poldrack/openfmri/tarballs'
-basedir='/scratch/01329/poldrack/openfmri/shared2/'
+tbdir='/corral-repl/utexas/poldracklab/openfmri/tarballs'
+basedir='/corral-repl/utexas/poldracklab/openfmri/shared2/'
 
 import sys,os
 from run_shell_cmd import *
 
-datasets=['ds001', 'ds002', 'ds003', 'ds005', 'ds006', 'ds007', 'ds008', 'ds011', 'ds017A', 'ds017B', 'ds018', 'ds051', 'ds052', 'ds101', 'ds102', 'ds105', 'ds107']
+datasets=['ds105']
+#, 'ds002', 'ds003', 'ds005', 'ds006', 'ds007', 'ds008', 'ds011', 'ds017A', 'ds017B', 'ds018', 'ds051', 'ds052', 'ds101', 'ds102', 'ds105', 'ds107']
 
-tarballs_to_make={'raw':0,'model':1}
+tarballs_to_make={'raw':1,'model':0}
 
 for dataset in datasets:
 
