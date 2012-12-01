@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-""" classify_task_wholebrain.py - classify task in openfmri data
+""" classify_task_searchlight.py - classify task in openfmri data
+
 """
 
 ## Copyright 2011, Russell Poldrack. All rights reserved.
@@ -32,13 +33,14 @@ from sklearn.svm import LinearSVC,SVC
 from sklearn.cross_validation import LeaveOneOut,StratifiedKFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
+from mvpa2.suite import *
 
 import os
 
 # load data
 
 datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep/'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/classifier/'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/classifier/searchlight'
 
 load_data=True
 trainsvm=True
@@ -54,21 +56,25 @@ if load_data:
 #    test_data=N.load('zstat_run2.npy')
 
 
-skf=StratifiedKFold(labels,8)
-#loo=LeaveOneOut(len(labels))
+dataset = fmri_dataset(
+                    samples=os.path.join(datadir, 'zstat_run1.nii.gz'),
+                          targets=labels,
+                          mask=os.path.join(datadir, 'goodvoxmask.nii.gz'))
 
 
-if trainsvm:
-    pred=N.zeros(len(labels))
-    for train,test in skf:
-        clf=LinearSVC()
-        clf.fit(data[train],labels[train])
-        pred[test]=clf.predict(data[test])
+clf=LinearCSVMC()
+cv = CrossValidation(clf, NFoldPartitioner())
+radius=5
+sl = sphere_searchlight(cv, radius=radius, space='voxel_indices',
+                          center_ids=center_ids,
+                          postproc=mean_sample())
 
 
-testacc=N.mean(pred==labels)
-print 'test accuracy = %f'%N.mean(pred==labels)
-cm=confusion_matrix(labels,pred)
-print cm
+ds = dataset.copy(deep=False,
+                sa=['targets', 'chunks'],
+                fa=['voxel_indices'],
+                a=['mapper'])
 
-N.savez(os.path.join(outdir,'classifier_results_SVM'),pred,labels,cm)
+sl_map=sl(ds)
+
+niftiresults = map2nifti(sl_map, imghdr=dataset.a.imghdr)

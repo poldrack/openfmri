@@ -41,6 +41,10 @@ fslmaths zstat_run1_goodvoxmask.nii.gz -mul zstat_run2_goodvoxmask.nii.gz goovox
 2.4_package_data_into_numpy.py
 
 
+2.5: make a smoothed version of the dataset
+
+Note: sigma for smoothing of 6mm = 6/(N.sqrt(N.log(2.0)*6.0)) = 2.9421370201494326
+
 3: run ICA on run1 data at various dimensionalities
 
 3_run_melodic.py
@@ -50,6 +54,13 @@ fslmaths zstat_run1_goodvoxmask.nii.gz -mul zstat_run2_goodvoxmask.nii.gz goovox
 3.1_project_data_into_ICs.py
 3.1.1_project_data_across_runs.sh
 (had to move these by hand to the data directory from the code directory)
+3.1.2_make_ICA_overlays.py
+
+
+3.2: run melodic on 6mm smoothed data
+
+3.2_run_melodic_smoothed.py
+
 
 4: run classifier on wholebrain data
 
@@ -72,9 +83,15 @@ mean:  0.053225
 
 
 5.1_estimate_parameters_from_run2.py
-5.2_get_best_params.py
+- uses get_best_params.py
 
 5_classify_task_ICA.py
+
+5.2_classify_task_ICA_randperm.py
+5.2.1_run_all_randomize_ICA.py
+5.2.2_combine_ICA_randperm_data.py
+5.2.3_make_ICA_acc_figure.py (TBD)
+
 
 
 6: run searchlight classifier
