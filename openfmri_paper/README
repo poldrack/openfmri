@@ -1,0 +1,89 @@
+This is the code for the revised set of openfmri analyses, performed
+in Nov/Dec 2012.
+
+
+1: copy all relevant zstats to a central directory (/corral-repl/utexas/poldracklab/openfmri/shared2/zstats)
+
+1_stage_zstats.py
+
+
+2: create data files for analysis:
+
+2_create_datafiles.py
+
+QA:
+computed meants using:
+fslmeants -i zstat_run1.nii.gz -m /corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/MNI152_T1_2mm_brain_mask.nii.gz  -o zstat_run1_meants.txt
+
+additional qa using 2.1_dataqa.py
+- this uncovered one subject for who the zstat image was empty (ds052_subctr158_task001_run001_zstat001.nii.gz which is ds052/sub011 - had no trials for this particular condition).  because of this I moved this subject to ds052/bad - then reran everything to get newly renumbered subjects
+
+
+- QA shows substantially different variability across datasets
+- but there don't appear to be any bad subjects
+
+2.2: prepare data for ICA by adding 10000 to zstat images
+
+2.2_mk_ad10000.sh
+
+
+2.3: create a mask that only includes voxels present for all subjects (allow a few to have missing data - right now threshold is 3)
+
+2.3_make_zstatmask.py
+
+- then combine them with the command:
+
+fslmaths zstat_run1_goodvoxmask.nii.gz -mul zstat_run2_goodvoxmask.nii.gz goovoxmask.nii.gz
+
+
+2.4: package data into numpy npy files for classifier
+
+2.4_package_data_into_numpy.py
+
+
+3: run ICA on run1 data at various dimensionalities
+
+3_run_melodic.py
+
+- project data into ICs
+
+3.1_project_data_into_ICs.py
+3.1.1_project_data_across_runs.sh
+(had to move these by hand to the data directory from the code directory)
+
+4: run classifier on wholebrain data
+
+4_classify_task_wholebrain.py
+results saved to classifier_results_SVM.npz
+SVM accuracy=93%
+
+- perform this 1000 times using randomized labels:
+
+4.1_randomize_wholebrain.py
+4.1.1_run_all_randomize_wholebrain.py
+4.1.2_run_all_randomize_wholebrain.sh - launcher script to run all 1000
+4.1.3_collect_all_randomize_wholebrain.py
+
+SVM:
+mean:  0.053225
+95 pct:  0.075
+
+5: run classifier on ICA components
+
+
+5.1_estimate_parameters_from_run2.py
+5.2_get_best_params.py
+
+5_classify_task_ICA.py
+
+
+6: run searchlight classifier
+
+
+
+
+
+
+
+
+
