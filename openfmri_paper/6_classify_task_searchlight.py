@@ -56,9 +56,11 @@ if load_data:
 #    test_data=N.load('zstat_run2.npy')
 
 
-dataset = fmri_dataset(
+if 1:
+  dataset = fmri_dataset(
                     samples=os.path.join(datadir, 'zstat_run1.nii.gz'),
                           targets=labels,
+                          chunks=range(len(labels)),
                           mask=os.path.join(datadir, 'goodvoxmask.nii.gz'))
 
 
@@ -66,12 +68,11 @@ clf=LinearCSVMC()
 cv = CrossValidation(clf, NFoldPartitioner())
 radius=5
 sl = sphere_searchlight(cv, radius=radius, space='voxel_indices',
-                          center_ids=center_ids,
                           postproc=mean_sample())
 
 
 ds = dataset.copy(deep=False,
-                sa=['targets', 'chunks'],
+                sa=['targets','chunks'],
                 fa=['voxel_indices'],
                 a=['mapper'])
 
