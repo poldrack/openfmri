@@ -41,7 +41,7 @@ load_data=True
 trainsvm=True
 testsvm=True
 basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/'
-melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/ICA/'
+melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/ICA_smoothed_6mm/'
 outdir=os.path.join(basedir,'classifier')
 train_labels=N.loadtxt(os.path.join(basedir,'data_prep/data_key_run2.txt'))[:,0]
 

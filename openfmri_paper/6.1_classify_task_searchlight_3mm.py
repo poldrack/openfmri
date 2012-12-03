@@ -52,26 +52,26 @@ if load_data:
 #    test_labels_txt=load_labels('tasklabels_run2.txt')
 #    test_labels=[labeldict[x] for x in test_labels_txt]
 
-#    data=N.load(os.path.join(datadir,'zstat_run1.npy'))
+#    data=N.load(os.path.join(datadir,'zstat_run1_3mm.npy'))
 #    test_data=N.load('zstat_run2.npy')
 
 
 if 1:
   dataset = fmri_dataset(
-                    samples=os.path.join(datadir, 'zstat_run1.nii.gz'),
+                    samples=os.path.join(datadir, 'zstat_run1_3mm.nii.gz'),
                           targets=labels,
                           chunks=range(len(labels)),
-                          mask=os.path.join(datadir, 'goodvoxmask.nii.gz'))
+                          mask=os.path.join(datadir, 'goodvoxmask_3mm.nii.gz'))
 
 # enable debug output for searchlight call
-#if __debug__:
-#        debug.active += ["SLC"]
+if __debug__:
+        debug.active += ["SLC"]
 
         
 clf=LinearCSVMC()
 part=NGroupPartitioner(ngroups=10,selection_strategy='random')
 cv = CrossValidation(clf, part)
-radius=5
+radius=4
 print 'starting searchlight...'
 
 sl = sphere_searchlight(cv, radius=radius, space='voxel_indices',
@@ -86,4 +86,4 @@ ds = dataset.copy(deep=False,
 sl_map=sl(ds)
 
 niftiresults = map2nifti(sl_map, imghdr=dataset.a.imghdr)
-niftiresults.to_filename(os.path.join(outdir,'searchlight_radius%d.nii.gz'%radius))
+niftiresults.save(os.path.join(outdir,'searchlight_radius%d_3mm.nii.gz'%radius))
