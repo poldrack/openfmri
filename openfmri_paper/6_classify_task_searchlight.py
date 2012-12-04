@@ -49,6 +49,8 @@ if load_data:
     datakeyfile=os.path.join(datadir,'data_key_run1.txt')
     datakey=N.loadtxt(datakeyfile)
     labels=datakey[:,0]
+    subjects=datakey[:,1]
+    
 #    test_labels_txt=load_labels('tasklabels_run2.txt')
 #    test_labels=[labeldict[x] for x in test_labels_txt]
 
@@ -84,6 +86,9 @@ ds = dataset.copy(deep=False,
                 a=['mapper'])
 
 sl_map=sl(ds)
-
+sl_map.samples *= -1
+sl_map.samples += 1
+     
 niftiresults = map2nifti(sl_map, imghdr=dataset.a.imghdr)
 niftiresults.to_filename(os.path.join(outdir,'searchlight_radius%d.nii.gz'%radius))
+
