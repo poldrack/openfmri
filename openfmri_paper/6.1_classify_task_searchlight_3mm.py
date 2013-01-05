@@ -63,25 +63,32 @@ if 1:
                           chunks=range(len(labels)),
                           mask=os.path.join(datadir, 'goodvoxmask_3mm.nii.gz'))
 
+
 # enable debug output for searchlight call
-if __debug__:
-        debug.active += ["SLC"]
+#if __debug__:
+#        debug.active += ["SLC"]
 
         
 clf=LinearCSVMC()
-part=NGroupPartitioner(ngroups=10,selection_strategy='random')
+part=NGroupPartitioner(ngroups=8)
 cv = CrossValidation(clf, part)
 radius=8
 print 'starting searchlight...'
 
 sl = sphere_searchlight(cv, radius=radius, space='voxel_indices',
-                          postproc=mean_sample(),nproc=8)
+                          postproc=mean_sample())
 
 
 ds = dataset.copy(deep=False,
                 sa=['targets','chunks'],
                 fa=['voxel_indices'],
                 a=['mapper'])
+
+# randomly reorder data and labels so that crossvalidation works
+randidx=range(ds.samples.shape[0])
+N.random.shuffle(randidx)
+ds.samples=ds.samples[randidx,:]
+ds.targets=ds.targets[randidx,:]
 
 sl_map=sl(ds)
 sl_map.samples *= -1

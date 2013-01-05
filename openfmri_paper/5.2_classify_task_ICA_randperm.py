@@ -83,7 +83,7 @@ for c in range(len(ncomp)):
     pred['svm']=N.zeros(len(labels))
     pred['rbf']=N.zeros(len(labels))
     pred['lr']=N.zeros(len(labels))
-    data=N.genfromtxt(melodic_dir+'datarun1_icarun1_%dcomp.txt'%ncomp[c])
+    data=N.genfromtxt(melodic_dir+'datarun1_icarun2_%dcomp.txt'%ncomp[c])
     for train,test in loo:
         svm_c=linsvm[c]
         #print 'SVM: ',svm_c

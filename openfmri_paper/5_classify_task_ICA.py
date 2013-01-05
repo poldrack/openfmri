@@ -76,7 +76,7 @@ for c in range(len(ncomp)):
     pred['svm']=N.zeros(len(labels))
     pred['rbf']=N.zeros(len(labels))
     pred['lr']=N.zeros(len(labels))
-    data=N.genfromtxt(melodic_dir+'datarun1_icarun1_%dcomp.txt'%ncomp[c])
+    data=N.genfromtxt(melodic_dir+'datarun1_icarun2_%dcomp.txt'%ncomp[c])
     for train,test in loo:
         svm_c=linsvm[c]
         print 'SVM: ',svm_c
@@ -99,9 +99,10 @@ for c in range(len(ncomp)):
     acc['rbf'][c]=N.mean(pred['rbf']==labels)
     acc['lr'][c]=N.mean(pred['lr']==labels)
 
-
-f=open(os.path.join(outdir,'ICA_classifier_accuracy.pkl'),'wb')
-pickle.dump(acc,f)
-f.close()
+save_data=True
+if save_data:
+    f=open(os.path.join(outdir,'ICA_classifier_accuracy.pkl'),'wb')
+    pickle.dump(acc,f)
+    f.close()
 
 

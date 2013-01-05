@@ -72,7 +72,7 @@ if 1:
 
         
 clf=LinearCSVMC()
-part=NGroupPartitioner(ngroups=10,selection_strategy='random')
+part=NGroupPartitioner(ngroups=10)
 cv = CrossValidation(clf, part)
 radius=5
 print 'starting searchlight...'
@@ -85,6 +85,12 @@ ds = dataset.copy(deep=False,
                 sa=['targets','chunks'],
                 fa=['voxel_indices'],
                 a=['mapper'])
+
+# randomly reorder data and labels so that crossvalidation works
+randidx=range(ds.samples.shape[0])
+N.random.shuffle(randidx)
+ds.samples=ds.samples[randidx,:]
+ds.targets=ds.targets[randidx,:]
 
 sl_map=sl(ds)
 

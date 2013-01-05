@@ -35,7 +35,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from mvpa2.suite import *
 
-import os
+import os,sys
+
+run=int(sys.argv[1])
 
 # load data
 
@@ -71,7 +73,7 @@ if 1:
 
         
 clf=LinearCSVMC()
-part=NGroupPartitioner(ngroups=10,selection_strategy='random')
+part=NGroupPartitioner(ngroups=8)
 cv = CrossValidation(clf, part)
 radius=5
 print 'starting searchlight...'
@@ -85,10 +87,16 @@ ds = dataset.copy(deep=False,
                 fa=['voxel_indices'],
                 a=['mapper'])
 
+# randomly reorder data and labels so that crossvalidation works
+randidx=range(ds.samples.shape[0])
+N.random.shuffle(randidx)
+ds.samples=ds.samples[randidx,:]
+ds.targets=ds.targets[randidx,:]
+
 sl_map=sl(ds)
 sl_map.samples *= -1
 sl_map.samples += 1
      
 niftiresults = map2nifti(sl_map, imghdr=dataset.a.imghdr)
-niftiresults.to_filename(os.path.join(outdir,'searchlight_radius%d.nii.gz'%radius))
+niftiresults.to_filename(os.path.join(outdir,'searchlight_radius%d_run%d.nii.gz'%(radius,run)))
 
