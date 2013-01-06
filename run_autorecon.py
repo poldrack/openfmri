@@ -75,9 +75,9 @@ def main():
 
     outfile=open('run_autorecon%d_%s.sh'%(arlevel,dataset),'w')
     cmdctr=0
-    for d in os.listdir(basedir+dataset):
+    for d in os.listdir(os.path.join(basedir,dataset)):
         if d[0:3]=='sub':
-            for m in os.listdir('%s/%s/anatomy/'%(basedir+dataset,d)):
+            for m in os.listdir('%s/%s/anatomy/'%(os.path.join(basedir,dataset),d)):
                 if m=='highres001.nii.gz':
                     subnum=int(d.replace('sub',''))
                     outfile.write('recon-all -autorecon%d -subjid %s_sub%03d -sd %s\n'%(arlevel,dataset,subnum,subdir))
