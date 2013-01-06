@@ -30,9 +30,9 @@ USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - defau
 
 import os
 import glob
-from mk_level1_fsf import *
+from mk_level1_fsf_bbr import *
 import launch_qsub
-
+import argparse
 import sys
 
 def usage():
@@ -40,41 +40,53 @@ def usage():
     sys.stdout.write(__doc__)
     sys.exit(2)
 
+def parse_command_line():
+    parser = argparse.ArgumentParser(description='setup_subject')
+    #parser.add_argument('integers', metavar='N', type=int, nargs='+',help='an integer for the accumulator')
+    # set up boolean flags
+
+
+    parser.add_argument('--taskid', dest='taskid',
+        required=True,help='Task ID')
+    parser.add_argument('--parenv', dest='parenv',
+        default='2way',help='Parallel environment')
+    parser.add_argument('--tasknum', dest='tasknum',type=int,
+        help='Task number')
+    parser.add_argument('--basedir', dest='basedir',
+        default=os.getcwd(),help='Base directory (above taskid directory)')
+    parser.add_argument('--smoothing', dest='smoothing',type=int,
+        default=0,help='Smoothing (mm FWHM)')
+    parser.add_argument('--use_inplane', dest='use_inplane', action='store_true',
+        default=False,help='Use inplane image')
+    parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
+        default=False,help='Use nonlinear regristration')
+    parser.add_argument('--modelnum', dest='modelnum',type=int,
+        default=1,help='Model number')
+    
+    args = parser.parse_args()
+    return args
+
 def main():
 
-    if len(sys.argv)>2:
-        dataset=sys.argv[1]
-        modelnum=int(sys.argv[2])
-    else:
-        usage()
+    args=parse_command_line()
+    print args
+    
+
+    smoothing=args.smoothing
+    use_inplane=args.use_inplane
+    basedir=args.basedir
+    nonlinear=args.nonlinear
+    modelnum=args.modelnum
 
 
-    if len(sys.argv)>3:
-        basedir=sys.argv[3]
-        if not os.path.exists(basedir):
-            print 'basedir %s does not exist!'%basedir
-            sys.exit(1)
-    else:
-        basedir=os.path.abspath(os.curdir)
-
-    if not basedir[-1]=='/':
-        basedir=basedir+'/'
-        
-    nonlinear=1
-    if len(sys.argv)>4:
-        nonlinear=int(sys.argv[4])
-        if nonlinear==0:
-            print 'using linear registration'
+    dataset=args.taskid
 
 
     outfile=open('mk_all_level1_%s.sh'%dataset,'w')
 
-    smoothing=0
-    if len(sys.argv)>5:
-        smoothing=int(sys.argv[5])
  
     tasknum_spec='task*'
-    if len(sys.argv)>6:
+    if not args.tasknum==None:
         tasknum_spec='task%03d*'%int(sys.argv[6])
  
 
@@ -106,6 +118,7 @@ def main():
             outfile.write('feat %s\n'%fname)
     outfile.close()
 
+
     print 'now launching all feats:'
     print "find %s/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"%taskid
     f=open('mk_all_level1_%s.sh'%dataset)
@@ -113,7 +126,7 @@ def main():
     f.close()
     njobs=len(l)
     ncores=(njobs/2)*12
-    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv='2way',ncores=ncores)
+    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=ncores)
 
 
 if __name__ == '__main__':
