@@ -79,14 +79,15 @@ def main():
 
 
     use_inplane=1
-
-    for d in os.listdir(basedir+dataset):
+    dsdir=os.path.join(basedir,dataset)
+    
+    for d in os.listdir(dsdir):
         if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(basedir+dataset,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)):
+            for bd in os.listdir('%s/%s/BOLD/'%(dsdir,d)):
+                for m in os.listdir('%s/%s/BOLD/%s/'%(dsdir,d,bd)):
                     # TBD: add checking to handle case with no viable data
                   if m=='bold_mcf_brain.nii.gz':
-                    root='%s/%s/BOLD/%s/'%(basedir+dataset,d,bd)
+                    root='%s/%s/BOLD/%s/'%(dsdir,d,bd)
                     f_split=root.split('/')
                     scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
                     taskid=f_split[6]
