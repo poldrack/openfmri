@@ -29,6 +29,7 @@ USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - defau
 
 
 import os
+import glob
 from mk_level1_fsf import *
 import launch_qsub
 
@@ -72,41 +73,37 @@ def main():
     if len(sys.argv)>5:
         smoothing=int(sys.argv[5])
  
-    tasknum_spec=0
+    tasknum_spec='task*'
     if len(sys.argv)>6:
-        tasknum_spec=int(sys.argv[6])
+        tasknum_spec='task%03d*'%int(sys.argv[6])
  
 
 
     use_inplane=1
     dsdir=os.path.join(basedir,dataset)
     
-    for d in os.listdir(dsdir):
-        if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(dsdir,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(dsdir,d,bd)):
-                    # TBD: add checking to handle case with no viable data
-                  if m=='bold_mcf_brain.nii.gz':
-                    root='%s/%s/BOLD/%s/'%(dsdir,d,bd)
-                    f_split=root.split('/')
-                    scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
-                    taskid=f_split[6]
-                    subnum=int(f_split[7].lstrip('sub'))
-                    taskinfo=f_split[9].split('_')
-                    tasknum=int(taskinfo[0].lstrip('task'))
-                    if (tasknum_spec>0) and not (tasknum==tasknum_spec):
-                        continue
-                    runnum=int(taskinfo[1].lstrip('run'))
-                    tr=float(load_scankey(scankey)['TR'])
-                    # check for inplane
-                    inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
-                    if os.path.exists(inplane):
-                        use_inplane=1
-                    else:
-                        use_inplane=0
-                    print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
-                    fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
-                    outfile.write('feat %s\n'%fname)
+    for root in glob.glob(os.path.join(dsdir,'sub*/BOLD/%s'%tasknum_spec)):
+ 
+        for m in glob.glob(os.path.join(root,'bold_mcf_brain.nii.gz')):
+            #print m
+            f_split=root.split('/')
+            scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
+            taskid=f_split[6]
+            subnum=int(f_split[7].lstrip('sub'))
+            taskinfo=f_split[9].split('_')
+            tasknum=int(taskinfo[0].lstrip('task'))
+
+            runnum=int(taskinfo[1].lstrip('run'))
+            tr=float(load_scankey(scankey)['TR'])
+            # check for inplane
+            inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
+            if os.path.exists(inplane):
+                use_inplane=1
+            else:
+                use_inplane=0
+            print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+            fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+            outfile.write('feat %s\n'%fname)
     outfile.close()
 
     print 'now launching all feats:'
