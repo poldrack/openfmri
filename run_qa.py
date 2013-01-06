@@ -51,19 +51,20 @@ def main():
             print 'basedir %s does not exist!'%basedir
             sys.exit(1)
     else:
-        basedir='/scratch/01329/poldrack/openfmri/staged/'
+        basedir='/corral-repl/utexas/poldracklab/openfmri/staged'
+        
 
-    sk=load_scankey(basedir+ds+'/scan_key.txt')
+    sk=load_scankey(os.path.join(basedir,ds,'scan_key.txt'))
     TR=sk['TR']
     
     outfile=open('run_qa_%s.sh'%ds,'w')
-
-    for d in os.listdir(basedir+ds):
+    dsdir=os.path.join(basedir,ds)
+    for d in os.listdir(dsdir):
         if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(basedir+ds,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+ds,d,bd)):
+            for bd in os.listdir('%s/%s/BOLD/'%(dsdir,d)):
+                for m in os.listdir('%s/%s/BOLD/%s/'%(dsdir,d,bd)):
                   if m=='bold_mcf.nii.gz':
-                      root='%s/%s/BOLD/%s/'%(basedir+ds,d,bd)
+                      root='%s/%s/BOLD/%s/'%(dsdir,d,bd)
                       outfile.write('fmriqa.py %s/%s %s\n'%(root,m,sk['TR']))
 
     outfile.close()
