@@ -50,12 +50,13 @@ def main():
         
     outfile=open('run_betfunc_%s.sh'%ds,'w')
     found_files=0
-    for d in os.listdir(basedir+ds):
+    dsdir=os.path.join(basedir,ds)
+    for d in os.listdir(dsdir):
         if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(basedir+ds,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+ds,d,bd)):
+            for bd in os.listdir('%s/%s/BOLD/'%(dsdir,d)):
+                for m in os.listdir('%s/%s/BOLD/%s/'%(dsdir,d,bd)):
                   if m=='bold_mcf.nii.gz':
-                    root='%s/%s/BOLD/%s/'%(basedir+ds,d,bd)
+                    root='%s/%s/BOLD/%s/'%(dsdir,d,bd)
                     outfile.write('bet %s/%s %s/%s -F\n'%(root,m,root,m.replace('mcf','mcf_brain')))
                     found_files=1
     outfile.close()
