@@ -44,7 +44,7 @@ if len(sys.argv)>2:
         print 'basedir %s does not exist!'%basedir
         sys.exit(1)
 else:
-    basedir='/corral-repl/utexas/poldracklab/openfmri/subdir/'
+    basedir='/corral-repl/utexas/poldracklab/openfmri/staged/'
  
 if len(sys.argv)>3:
     subdir=sys.argv[3]
@@ -58,7 +58,8 @@ else:
 outfile=open('run_copy_stripped_%s.sh'%dataset,'w')
 
 
-for root,dirs,files in os.walk(basedir+dataset):
+dsdir=os.path.join(basedir,dataset)
+for root,dirs,files in os.walk(dsdir):
     for f in files:
         if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
             f_split=root.split('/')
