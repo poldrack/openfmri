@@ -92,9 +92,9 @@ def main():
     modelnum=args.modelnum
     print taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum
     
-    mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
     
-def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1):
+def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1):
 #if 1==1:
     
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
@@ -131,7 +131,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     else:
         nskip=0
         
-    stubfilename='/work/01329/poldrack/code/poldrack/openfmri/design_level1.stub'
+    stubfilename='/corral-repl/utexas/poldracklab/openfmri/code/design_level1_fsl5.stub'
     modelbasedir=subdir+'/model/'
     if not os.path.exists(modelbasedir):
         os.mkdir(modelbasedir)
