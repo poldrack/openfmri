@@ -56,10 +56,12 @@ def parse_command_line():
         default=os.getcwd(),help='Base directory (above taskid directory)')
     parser.add_argument('--smoothing', dest='smoothing',type=int,
         default=0,help='Smoothing (mm FWHM)')
-    parser.add_argument('--use_inplane', dest='use_inplane', action='store_true',
-        default=False,help='Use inplane image')
+    parser.add_argument('--use_inplane', dest='use_inplane', type=int,
+        default=0,help='Use inplane image')
     parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
         default=False,help='Use nonlinear regristration')
+    parser.add_argument('--test', dest='test', action='store_true',
+        default=False,help='Test mode (do not run job)')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
     parser.add_argument('--ncores', dest='ncores',type=int,
@@ -82,18 +84,18 @@ def main():
 
 
     dataset=args.taskid
-
-
-    outfile=open('mk_all_level1_%s.sh'%dataset,'w')
+    
+    if not args.test:
+        outfile=open('mk_all_level1_%s.sh'%dataset,'w')
 
  
     tasknum_spec='task*'
     if not args.tasknum==None:
-        tasknum_spec='task%03d*'%int(sys.argv[6])
+        tasknum_spec='task%03d*'%args.tasknum
  
 
 
-    use_inplane=1
+
     dsdir=os.path.join(basedir,dataset)
     
     for root in glob.glob(os.path.join(dsdir,'sub*/BOLD/%s'%tasknum_spec)):
@@ -113,19 +115,21 @@ def main():
             inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
 
             print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
-            fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
-            outfile.write('feat %s\n'%fname)
-    outfile.close()
+            if not args.test:
+                fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+                outfile.write('feat %s\n'%fname)
+    if not args.test:
+        outfile.close()
 
-
-    print 'now launching all feats:'
-    print "find %s/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"%taskid
-    f=open('mk_all_level1_%s.sh'%dataset)
-    l=f.readlines()
-    f.close()
-    njobs=len(l)
-    ncores=(njobs/2)*12
-    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
+    if not args.test:
+        print 'now launching all feats:'
+        print "find %s/sub*/model/*.fsf |sed 's/^/feat /' > run_all_feats.sh; sh run_all_feats.sh"%args.taskid
+        f=open('mk_all_level1_%s.sh'%dataset)
+        l=f.readlines()
+        f.close()
+        njobs=len(l)
+        ncores=(njobs/2)*12
+        launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
 
 
 if __name__ == '__main__':
