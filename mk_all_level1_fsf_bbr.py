@@ -62,6 +62,8 @@ def parse_command_line():
         default=False,help='Use nonlinear regristration')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
+    parser.add_argument('--ncores', dest='ncores',type=int,
+        default=6,help='number of cores (ncores * way = 12)')
     
     args = parser.parse_args()
     return args
@@ -109,12 +111,9 @@ def main():
             tr=float(load_scankey(scankey)['TR'])
             # check for inplane
             inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
-            if os.path.exists(inplane):
-                use_inplane=1
-            else:
-                use_inplane=0
-            print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
-            fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+
+            print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+            fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
             outfile.write('feat %s\n'%fname)
     outfile.close()
 
@@ -126,7 +125,7 @@ def main():
     f.close()
     njobs=len(l)
     ncores=(njobs/2)*12
-    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=ncores)
+    launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
 
 
 if __name__ == '__main__':
