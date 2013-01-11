@@ -25,6 +25,7 @@
 
 
 import os
+import glob
 import numpy as N
 
 r2z = lambda r: 0.5*(N.log(1+r)-N.log(1-r))
@@ -173,3 +174,36 @@ def load_fsl_design_con(featdir):
 
     
     return dcon
+
+
+
+
+
+def get_openfmri_contrasts(dataset):
+    basedir='/corral-repl/utexas/poldracklab/openfmri/shared2'
+
+    contrasts={}
+    contrast_files=glob.glob(os.path.join(basedir,dataset,'sub001/model/model001/task*_run001.feat/design.con'))
+    for c in contrast_files:
+        
+        tasknum=int(c.split('task')[1].split('_')[0])
+        contrasts[tasknum]=load_fsl_design_con(c)
+        
+    
+    return contrasts
+
+
+def load_fsl_design_con(infile):
+
+    f=open(infile)
+    data=[i for i in f.readlines() if i.find('/ContrastName')==0]
+    f.close()
+
+    contrasts={}
+    for c in data:
+        connum=int(c.split('\t')[0].replace('/ContrastName',''))
+        conname=c.strip().split('\t')[1].replace('"','')
+       # print connum,conname
+        contrasts[connum]=conname
+    
+    return contrasts
