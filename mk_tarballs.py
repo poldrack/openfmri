@@ -6,7 +6,13 @@ basedir='/corral-repl/utexas/poldracklab/openfmri/shared2/'
 import sys,os
 from run_shell_cmd import *
 
-datasets=['ds105']
+try:
+    datasets=[sys.argv[1]]
+except:
+    print 'USAGE: mk_tarballs.py <ds code>'
+    sys.exit()
+    
+#datasets=['ds105']
 #, 'ds002', 'ds003', 'ds005', 'ds006', 'ds007', 'ds008', 'ds011', 'ds017A', 'ds017B', 'ds018', 'ds051', 'ds052', 'ds101', 'ds102', 'ds105', 'ds107']
 
 tarballs_to_make={'raw':1,'model':0}
