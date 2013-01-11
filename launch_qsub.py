@@ -175,6 +175,7 @@ def launch_qsub(serialcmd='',script_name='',runtime='01:00:00',ncores=0,parenv='
         
 
     qsubfile_fd.write('#----------------\n# Job Submission\n#----------------\n')
+    qsubfile_fd.write('\numask 2\n')
 
     if not parametric:
         qsubfile_fd.write('\n\nset -x                   # Echo commands, use "set echo" with csh\n')
