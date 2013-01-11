@@ -56,8 +56,8 @@ def parse_command_line():
         required=True,help='Base directory (above taskid directory)')
     parser.add_argument('--smoothing', dest='smoothing',type=int,
         default=0,help='Smoothing (mm FWHM)')
-    parser.add_argument('--use_inplane', dest='use_inplane', action='store_true',
-        default=False,help='Use inplane image')
+    parser.add_argument('--use_inplane', dest='use_inplane', type=int,
+        default=0,help='Use inplane image')
     parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
         default=False,help='Use nonlinear regristration')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
@@ -119,10 +119,13 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
     qadir='%s/BOLD/task%03d_run%03d/QA'%(subdir,tasknum,runnum)
 
     
-    contrasts_all=load_contrasts(os.path.join(basedir,taskid,'/models/model%03d/task_contrasts.txt'%modelnum))
+    contrasts_all=load_contrasts(os.path.join(basedir,taskid,'models/model%03d/task_contrasts.txt'%modelnum))
+
     contrasts=[]
     if contrasts_all.has_key('task%03d'%tasknum):
         contrasts=contrasts_all['task%03d'%tasknum]
+ 
+ 
         
     scan_key=load_scankey(os.path.join(basedir,taskid,'scan_key.txt'))
     tr=float(scan_key['TR'])
