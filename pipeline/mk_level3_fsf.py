@@ -61,7 +61,7 @@ def mk_level3_fsf(taskid,tasknum,modelnum,basedir):
 
     ncopes=len(conditions)+1+n_addl_contrasts
    
-    stubfilename='/work/01329/poldrack/code/poldrack/openfmri/design_level3.stub'
+    stubfilename='/home1/01329/poldrack/code/openfmri/pipeline/design_level3.stub'
     fsfnames=[]
     for copenum in range(1,ncopes+1):
         outfilename='%s/cope%03d.fsf'%(modeldir,copenum)

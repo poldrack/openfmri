@@ -95,7 +95,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     else:
         nskip=0
         
-    stubfilename='/work/01329/poldrack/code/poldrack/openfmri/design_level1.stub'
+    stubfilename='/home1/01329/poldrack/code/openfmri/pipeline/design_level1.stub'
     modelbasedir=subdir+'/model/'
     if not os.path.exists(modelbasedir):
         os.mkdir(modelbasedir)
