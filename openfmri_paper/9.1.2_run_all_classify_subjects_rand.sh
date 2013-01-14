@@ -1,0 +1,16 @@
+python 9.1_classify_subjects_rand.py 500
+python 9.1_classify_subjects_rand.py 501
+python 9.1_classify_subjects_rand.py 502
+python 9.1_classify_subjects_rand.py 503
+python 9.1_classify_subjects_rand.py 504
+python 9.1_classify_subjects_rand.py 505
+python 9.1_classify_subjects_rand.py 506
+python 9.1_classify_subjects_rand.py 507
+python 9.1_classify_subjects_rand.py 508
+python 9.1_classify_subjects_rand.py 509
+python 9.1_classify_subjects_rand.py 5010
+python 9.1_classify_subjects_rand.py 5011
+python 9.1_classify_subjects_rand.py 5012
+python 9.1_classify_subjects_rand.py 5013
+python 9.1_classify_subjects_rand.py 5014
+python 9.1_classify_subjects_rand.py 5015
