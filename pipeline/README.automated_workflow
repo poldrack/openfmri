@@ -1,0 +1,104 @@
+Here is a brief overview of the automated analysis pipeline
+for the openfmri project:
+
+NOTE: all of these programs use os.walk to look in the entire directory tree
+to find relevant files. I think that this is pretty inefficient.
+
+Pipeline:
+functional:
+1. motion correction
+2. brain extraction
+3. first-level modeling (requires that structural pipeline has been
+completed up through step #3)
+4. second-level modeling
+5. third-level modeling
+
+structural:
+1. copy data into freesurfer subjects dir
+2. run autorecon1 (which includes brain extraction)
+3. copy stripped brain back into anatomy dir
+4. run autorecon2/3
+
+Functional pipeline details:
+
+1. motion correction:
+run_mcflirt.py <subdir> <basedir>
+
+so for data in /scratch/01329/poldrack/openfmri/staged/ds105 the call would be:
+
+run_mcflirt.py ds105 /scratch/01329/poldrack/openfmri/staged/
+
+this automatically creates a script and sends it to the grid.
+
+
+2. brain extraction:
+
+run_betfunc.py  <subdir> <basedir>
+
+- automatically submits job to grid
+
+
+3. first-level modeling
+
+to set up models, run:
+
+mk_all_level1_fsf.py <name of dataset> <basedir - default is staged> <nonlinear - default=1>
+
+this creates the .fsf files for each model.  then find all of these and run 
+them on the grid.  right now this is not fired automatically.
+
+4. second-level modeling:
+
+this is only appropriate for tasks with multiple runs.  right now, I don't 
+think the third-level code will accomodate tasks with just a single run, 
+so taht would be a good feature to add.
+
+mk_all_level2_fsf.py <name of dataset>  <basedir - default is staged>
+
+-not automatically submitted
+- would be nice if it could check the integrity of the first-level models before running (preferably using a separate function that could also be used independently).
+
+5. third level modeling
+
+mk_all_level3_fsf.py <name of dataset> <nsubs>  <basedir - default is staged>
+
+-not automatically submitted
+- would be nice if it would automatically determine the # of subjects, and also check the integrity of the second-level models before running (preferably using a separate function that could also be used independently).
+
+6. quality control
+
+- need to make sure everything worked properly.  would be nice to have QC 
+inserted after every step, though we don't have automated means for all of them.
+
+
+
+Structural pipeline details:
+
+1. copy data into subdir:
+
+fs_setup.py <dataset> <basedir>
+
+- currently this is not run on the grid, and is not executed automatically
+
+
+2. run autorecon1:
+
+all of the autorecon levels are run using:
+
+run_autorecon.py <taskid> <autorecon level> <basedir> <subdir>
+ 
+
+3. copy data back to anatomy:
+
+run_copy_stripped.py <dataset> <basedir> <subdir>
+
+
+4. run autorecon levels 2 and 3
+
+run_autorecon.py <taskid> <autorecon level> <basedir> <subdir>
+
+
+5.  check to make sure that everything worked
+
+- will need to work with Akram to figure out the right QC metrics 
+for the freesurfer pipeline
