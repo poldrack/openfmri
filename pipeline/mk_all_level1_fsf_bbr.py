@@ -65,7 +65,7 @@ def parse_command_line():
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
     parser.add_argument('--ncores', dest='ncores',type=int,
-        default=6,help='number of cores (ncores * way = 12)')
+        default=0,help='number of cores (ncores * way = 12)')
     
     args = parser.parse_args()
     return args
@@ -78,7 +78,7 @@ def main():
 
     smoothing=args.smoothing
     use_inplane=args.use_inplane
-    basedir=args.basedir
+    basedir=os.path.abspath(args.basedir)
     nonlinear=args.nonlinear
     modelnum=args.modelnum
 
@@ -103,6 +103,7 @@ def main():
         for m in glob.glob(os.path.join(root,'bold_mcf_brain.nii.gz')):
             #print m
             f_split=root.split('/')
+            print f_split
             scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
             taskid=f_split[6]
             subnum=int(f_split[7].lstrip('sub'))
@@ -128,7 +129,15 @@ def main():
         l=f.readlines()
         f.close()
         njobs=len(l)
-        ncores=(njobs/2)*12
+        
+        if args.parenv=='':
+            args.parenv='6way'
+
+        way=float(args.parenv.replace('way',''))
+            
+        if args.ncores==0:
+            ncores=(njobs/way)*12.0
+
         launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
 
 
