@@ -79,6 +79,7 @@ def main():
                 if m[-5:]=='.feat':
                     featdirs.append(m)
                     fs=featdirs[-1]
+                    print fs
                     subnum=int(d.replace('sub',''))
                     if not subdirs.has_key(subnum):
                         subdirs[subnum]={}
@@ -100,6 +101,7 @@ def main():
                       outfile.write('feat %s\n'%fname)
                 
     outfile.close()
+
 
     print 'now launching using:'
     print 'launch -s run_all_level2_%s.sh -n %sl2 -r 02:00:00'%(taskid,taskid)
