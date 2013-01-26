@@ -49,7 +49,7 @@ def mk_level2_fsf(taskid,subnum,tasknum,runs,basedir,modelnum):
     conditions=cond_key[tasknum].values()
     nruns=len(runs)
 
-    stubfilename='/home1/01329/poldrack/code/openfmri/pipeline/design_level2.stub'
+    stubfilename='/corral-repl/utexas/poldracklab/openfmri/code/pipeline/design_level2.stub'
     modeldir=subdir+'/model/model%03d'%modelnum
 
     outfilename='%s/task%03d.fsf'%(modeldir,tasknum)
