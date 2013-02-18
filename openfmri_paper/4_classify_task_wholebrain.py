@@ -62,13 +62,15 @@ if trainsvm:
     pred=N.zeros(len(labels))
     for train,test in skf:
         clf=LinearSVC()
-        clf.fit(data[train],labels[train])
-        pred[test]=clf.predict(data[test])
+        data[train].shape
+        data[test].shape
+        clf.fit(data[:,train].T,labels[train])
+        pred[test]=clf.predict(data[:,test].T)
 
 
 testacc=N.mean(pred==labels)
 print 'test accuracy = %f'%N.mean(pred==labels)
 cm=confusion_matrix(labels,pred)
-print cm
+#print cm
 
-N.savez(os.path.join(outdir,'classifier_results_SVM'),pred,labels,cm)
+#N.savez(os.path.join(outdir,'classifier_results_SVM'),pred,labels,cm)
