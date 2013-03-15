@@ -31,6 +31,7 @@ USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - defau
 import os
 import glob
 from mk_level1_fsf_bbr import *
+from mk_level1_fsf import *
 import launch_qsub
 import argparse
 import sys
@@ -60,6 +61,8 @@ def parse_command_line():
         default=0,help='Use inplane image')
     parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
         default=False,help='Use nonlinear regristration')
+    parser.add_argument('--nobbr', dest='nobbr', action='store_true',
+        default=False,help='Use standard reg instead of BBR')
     parser.add_argument('--test', dest='test', action='store_true',
         default=False,help='Test mode (do not run job)')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
@@ -114,10 +117,15 @@ def main():
             tr=float(load_scankey(scankey)['TR'])
             # check for inplane
             inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
-
-            print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+            if args.nobbr:
+                 print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+            else:
+                print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
             if not args.test:
-                fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+                if args.nobbr:
+                     fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+                else:
+                    fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
                 outfile.write('feat %s\n'%fname)
     if not args.test:
         outfile.close()
