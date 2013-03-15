@@ -23,12 +23,16 @@ for f in featdirs:
     if not subcode in subs:
         subs.append(subcode)
         print 'processing',subcode
-    #print 'checking %s'%f
+    print 'checking %s'%f
     taskname,runname=os.path.basename(f).replace('.feat','').split('_')
     tasknum=int(taskname.replace('task',''))
     runnum=int(runname.replace('run',''))
     #print f,tasknum,runnum
-    featdir=Featdir(f)
+    try:
+        featdir=Featdir(f)
+    except:
+        print 'problem with %s'%f
+        continue
     featdir.run_all_checks()
     warnings=[]
     for w in featdir.warnings:
