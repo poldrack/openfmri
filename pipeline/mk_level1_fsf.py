@@ -62,15 +62,15 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
 #if 1==1:
     
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
-
+    print 'processing',subdir
     # read the conditions_key file
-    cond_key=load_condkey(basedir+taskid+'/models/model%03d/condition_key.txt'%modelnum)
+    cond_key=load_condkey(os.path.join(basedir,taskid,'models/model%03d/condition_key.txt'%modelnum))
 
     conditions=cond_key[tasknum].values()
 
     # check for orthogonalization file
     orth={}
-    orthfile=basedir+taskid+'/models/model%03d/orthogonalize.txt'%modelnum
+    orthfile=os.path.join(basedir,taskid,'models/model%03d/orthogonalize.txt'%modelnum)
     if os.path.exists(orthfile):
         f=open(orthfile)
         for l in f.readlines():
@@ -83,12 +83,12 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     qadir='%s/BOLD/task%03d_run%03d/QA'%(subdir,tasknum,runnum)
 
     
-    contrasts_all=load_contrasts(basedir+taskid+'/models/model%03d/task_contrasts.txt'%modelnum)
+    contrasts_all=load_contrasts(os.path.join(basedir,taskid,'models/model%03d/task_contrasts.txt'%modelnum))
     contrasts=[]
     if contrasts_all.has_key('task%03d'%tasknum):
         contrasts=contrasts_all['task%03d'%tasknum]
         
-    scan_key=load_scankey(basedir+taskid+'/scan_key.txt')
+    scan_key=load_scankey(os.path.join(basedir,taskid,'scan_key.txt'))
     tr=float(scan_key['TR'])
     if scan_key.has_key('nskip'):
         nskip=int(scan_key['nskip'])
