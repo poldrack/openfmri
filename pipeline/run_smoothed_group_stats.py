@@ -1,18 +1,50 @@
+#!/usr/bin/env python
 """
 take filtered func data from stats dirs,
 apply spatial smoothing, and run group
 model using randomize
 """
 
-import os
+import os,sys
 import glob
 import numpy
+import argparse
 
-basedir='/corral-repl/utexas/poldracklab/openfmri/shared2'
-datasets=['ds002', 'ds003', 'ds005', 'ds006A', 'ds007', 'ds008', 'ds011', 'ds017A', 'ds017B', 'ds051', 'ds052', 'ds101', 'ds102', 'ds105', 'ds107']
-modelnum=1
-fwhm=6.0
-maskimg='/corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'
+def parse_command_line():
+    parser = argparse.ArgumentParser(description='run_smoothed_group_stats')
+    parser.add_argument('-b','--basedir', dest='basedir',
+        help='base directory for data file', default='/corral-repl/utexas/poldracklab/data/openfmri/shared2')
+    parser.add_argument('input',nargs='+', #dest='studyname',
+        help='name of study/studies to be analyzed')
+    parser.add_argument('--modelnum', dest='modelnum',type=int,
+        default=1,help='Model number')
+    parser.add_argument('--smoothing', dest='smoothing',type=float,
+        default=6.0,help='Smoothing (mm FWHM)')
+    parser.add_argument('-m','--maskimg', dest='maskimg',
+        help='mask image for randomise', default='/corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/MNI152_T1_2mm_brain_mask.nii.gz')
+
+    args = parser.parse_args()
+    return args
+
+args=parse_command_line()
+
+print args
+datasets=[]
+for i in args.input:
+    if not os.path.exists(os.path.join(args.basedir,i)):
+        print os.path.join(args.basedir,i),'does not exist, skipping'
+    else:
+        datasets.append(i)
+
+basedir=args.basedir
+
+#datasets=['ds001','ds002', 'ds003', 'ds005', 'ds006A', 'ds007', 'ds008', 'ds011', 'ds017A', 'ds017B', 'ds051', 'ds052', 'ds101', 'ds102', 'ds105', 'ds107']
+
+modelnum=args.modelnum
+fwhm=args.smoothing
+maskimg=args.maskimg
+#maskimg='/corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'
+
 sigma=numpy.sqrt(numpy.log(2.0)*fwhm)
 
 
