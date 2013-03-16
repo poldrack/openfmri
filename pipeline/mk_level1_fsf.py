@@ -212,7 +212,7 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
     for evt in range(nevs):
             outfile.write('set fmri(con_orig%d.%d) %d\n'%(ev+2,evt+1,convals_orig[evt]))
 
-    # add custom contrasts
+   # add custom contrasts
     if len(contrasts)>0:
         print contrasts
         contrastctr=ev+3;
@@ -222,9 +222,13 @@ def mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/c
             outfile.write('set fmri(conname_real.%d) "%s"\n'%(contrastctr,c))
             outfile.write('set fmri(conname_orig.%d) "%s"\n'%(contrastctr,c))
             cveclen=len(contrasts[c])
-            for evt in range(nevs*2):
-                if evt<cveclen:
-                    outfile.write('set fmri(con_real%d.%d) %s\n'%(contrastctr,evt+1,contrasts[c][evt]))
+            con_real_ctr=1
+            for evt in range(nevs):
+                if contrasts[c][evt]!=0:
+                    outfile.write('set fmri(con_real%d.%d) %s\n'%(contrastctr,con_real_ctr,contrasts[c][evt]))
+                    outfile.write('set fmri(con_real%d.%d) 0\n'%(contrastctr,con_real_ctr+1))
+                    con_real_ctr+=2
+                    
                 else:
                     outfile.write('set fmri(con_real%d.%d) 0\n'%(contrastctr,evt+1))
                     
