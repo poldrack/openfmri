@@ -18,7 +18,7 @@ studies=['ds001',
 'ds007',
 'ds008',
 'ds011',
-'ds017',
+'ds017A',
 'ds051',
 'ds052',
 'ds101',
@@ -41,7 +41,7 @@ for study in studies:
     condition_keys[study]=load_condkey(os.path.join(studydir,'models/model001/condition_key.txt'))
     contrasts[study]={}
     for t in task_keys[study].iterkeys():
-        contrasts[study][t]=load_fsl_design_con(os.path.join(studydir,'sub001/model/model001/%s_run001.feat'%t))
+        contrasts[study][t]=load_fsl_design_con(os.path.join(studydir,'sub001/model/model001/%s_run001.feat/design.con'%t))
     stdrs=os.listdir(studydir)
     subdirs=[x for x in stdrs if x.find('sub')==0]
     #if 0:

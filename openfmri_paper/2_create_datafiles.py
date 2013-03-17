@@ -34,7 +34,7 @@ from get_contrasts_to_use import *
 
 basedir='/corral-repl/utexas/poldracklab/openfmri/shared2/'
 zstatdir=os.path.join(basedir,'zstats')
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_March2013/data_prep'
 
 #all_trials_cope={2:{1:1,2:1,3:3},3:{1:3},5:{1:1},6:{1:6},7:{1:1,2:1,3:1},8:{1:1,2:1},11:{1:1,2:1,3:1,4:5},101:{1:5},102:{1:5}}
 #nsubs={'ds002':17,'ds003':13, 'ds005':16,'ds006':14,'ds007':21,'ds008':15,'ds011':14,'ds101':21,'ds102':26}
@@ -71,7 +71,7 @@ taskctr={'ds001': {1: 1},
  'ds007': {1: 8, 2: 9, 3: 10},
  'ds008': {1: 11, 2: 12},
  'ds011': {1: 13, 2: 14, 3: 15, 4: 16},
- 'ds017': {2: 17},
+ 'ds017A': {2: 17},
  'ds051': {1: 18},
  'ds052': {1: 19, 2: 20},
  'ds101': {1: 21},
@@ -103,7 +103,7 @@ for run in [1,2]:
 
     alldata=N.zeros((91,109,91,npts))
     for z in zstat_files[run]:
-                    print 'processing ', z
+                    #print 'processing ', z
                     i=nibabel.load(os.path.join(zstatdir,z))
                     ds,subctr,task,runctr,zstatctr=z.replace('.nii.gz','').split('_')
                     alldata[:,:,:,ctr]=i.get_data()
