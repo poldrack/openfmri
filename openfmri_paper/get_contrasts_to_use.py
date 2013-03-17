@@ -9,7 +9,7 @@ outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012
 
 
 def get_contrasts_to_use():
-    datasets=['ds001','ds002','ds003','ds005','ds006A','ds007','ds008','ds011','ds017','ds051','ds052','ds101','ds102','ds107']
+    datasets=['ds001','ds002','ds003','ds005','ds006A','ds007','ds008','ds011','ds017A','ds051','ds052','ds101','ds102','ds107']
 
     contrasts_to_use={}
 
@@ -27,10 +27,12 @@ def get_contrasts_to_use():
     ## 2: feedback
 
     contrasts_to_use['ds002'][1]=[1]
+    
     ## ## ds002 task002 deterministic_classification
     ## 1: task
     ## 2: feedback
     contrasts_to_use['ds002'][2]=[2]
+    
     ## ## ds002 task003 mixed_event-related_probe
     ## 3: all
     contrasts_to_use['ds002'][3]=[3]
@@ -98,7 +100,7 @@ def get_contrasts_to_use():
     ## ## ds017 task002 selective_stop-signal_task
     ## 1: 'go-critical'
     ## 2: 'go-noncritical'
-    contrasts_to_use['ds017'][2]=[1]
+    contrasts_to_use['ds017A'][2]=[1]
 
     ## ## ds051 task001 abstract-concrete_judgment
     ## 17: 'all'
