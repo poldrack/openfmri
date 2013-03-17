@@ -36,9 +36,6 @@ basedir='/corral-repl/utexas/poldracklab/openfmri/shared2/'
 zstatdir=os.path.join(basedir,'zstats')
 outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_March2013/data_prep'
 
-#all_trials_cope={2:{1:1,2:1,3:3},3:{1:3},5:{1:1},6:{1:6},7:{1:1,2:1,3:1},8:{1:1,2:1},11:{1:1,2:1,3:1,4:5},101:{1:5},102:{1:5}}
-#nsubs={'ds002':17,'ds003':13, 'ds005':16,'ds006':14,'ds007':21,'ds008':15,'ds011':14,'ds101':21,'ds102':26}
-#nsubs_total=N.sum(nsubs.values())
 
 contrasts_to_use=get_contrasts_to_use()
 
@@ -76,7 +73,10 @@ taskctr={'ds001': {1: 1},
  'ds052': {1: 19, 2: 20},
  'ds101': {1: 21},
  'ds102': {1: 22},
- 'ds107': {1: 23}}
+ 'ds105': {1: 23}
+ 'ds107': {1: 24},
+ 'ds108': {1: 25},
+ 'ds110': {1: 26}}
 
 zstat_files={1:[],2:[]}  # index across runs
 
