@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """ mk_all_level1_fsf.py - make fsf files for all subjects
 
-USAGE: python mk_all_level1_fsf.py <name of dataset> <modelnum> <basedir - default is staged> <nonlinear - default=1> <smoothing - default=0> <tasknum - default to all>
+USAGE: python mk_all_level1_fsf_bbr.py <name of dataset> <modelnum> <basedir - default is staged> <nonlinear - default=1> <smoothing - default=0> <tasknum - default to all>
 
 """
 
@@ -118,9 +118,10 @@ def main():
             # check for inplane
             inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
             if args.nobbr:
+                 print 'using nobbr option'
                  print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
             else:
-                print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+                 print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
             if not args.test:
                 if args.nobbr:
                      fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
