@@ -95,7 +95,6 @@ def main():
     mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
     
 def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1):
-#if 1==1:
     
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
@@ -103,7 +102,8 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
     cond_key=load_condkey(os.path.join(basedir,taskid,'models/model%03d/condition_key.txt'%modelnum))
 
     conditions=cond_key[tasknum].values()
-
+    print 'found conditions:',conditions
+    
     # check for orthogonalization file
     orth={}
     orthfile=os.path.join(basedir,taskid,'models/model%03d/orthogonalize.txt'%modelnum)
@@ -114,12 +114,16 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
             if orth_tasknum==tasknum:
                 orth[int(l.split()[1])]=int(l.split()[2])
         f.close()
-
+    else:
+        print 'no orthogonalization found'
+        
     # check for QA dir
     qadir='%s/BOLD/task%03d_run%03d/QA'%(subdir,tasknum,runnum)
 
-    
+
+    print 'loading contrasts'
     contrasts_all=load_contrasts(os.path.join(basedir,taskid,'models/model%03d/task_contrasts.txt'%modelnum))
+    print 'added contrasts:',contrasts_all
 
     contrasts=[]
     if contrasts_all.has_key('task%03d'%tasknum):
