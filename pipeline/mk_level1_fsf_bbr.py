@@ -60,6 +60,8 @@ def parse_command_line():
         default=0,help='Use inplane image')
     parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
         default=False,help='Use nonlinear regristration')
+    parser.add_argument('--noconfound', dest='confound', action='store_false',
+        default=True,help='Omit motion/confound modeling')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
     parser.add_argument('--anatimg', dest='anatimg',
@@ -93,12 +95,13 @@ def main():
     nonlinear=args.nonlinear
     modelnum=args.modelnum
     anatimg=args.anatimg
+    confound=args.confound
     
     print taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum
     
-    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,anatimg)
+    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,anatimg,confound)
     
-def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1,anatimg=''):
+def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1,anatimg='',confound=True):
     
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
@@ -289,10 +292,9 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
                     outfile.write('set fmri(con_orig%d.%d) 0\n'%(contrastctr,evt+1))
 
             contrastctr+=1
-
     # Add confound EVs text file
     confoundfile="%s/BOLD/task%03d_run%03d/QA/confound.txt"%(subdir,tasknum,runnum)
-    if os.path.exists(confoundfile):
+    if os.path.exists(confoundfile) and confound:
         outfile.write('set fmri(confoundevs) 1\n')
         outfile.write('set confoundev_files(1) "%s"\n'%confoundfile)
     else:
