@@ -51,12 +51,16 @@ def parse_command_line():
         required=True,help='Task ID')
     parser.add_argument('--parenv', dest='parenv',
         default='2way',help='Parallel environment')
+    parser.add_argument('--anatimg', dest='anatimg',
+        default='',help='Specified anatomy image')
     parser.add_argument('--tasknum', dest='tasknum',type=int,
         help='Task number')
     parser.add_argument('--basedir', dest='basedir',
         default=os.getcwd(),help='Base directory (above taskid directory)')
     parser.add_argument('--smoothing', dest='smoothing',type=int,
         default=0,help='Smoothing (mm FWHM)')
+    parser.add_argument('--noconfound', dest='confound', action='store_false',
+        default=True,help='Omit motion/confound modeling')
     parser.add_argument('--use_inplane', dest='use_inplane', type=int,
         default=0,help='Use inplane image')
     parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
@@ -65,6 +69,8 @@ def parse_command_line():
         default=False,help='Use standard reg instead of BBR')
     parser.add_argument('--test', dest='test', action='store_true',
         default=False,help='Test mode (do not run job)')
+    parser.add_argument('--nolaunch', dest='launch', action='store_false',
+        default=True,help='Do not launch job')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
     parser.add_argument('--ncores', dest='ncores',type=int,
@@ -85,7 +91,9 @@ def main():
     nonlinear=args.nonlinear
     modelnum=args.modelnum
 
-
+    if not args.confound:
+        print 'omitting confound modeling'
+        
     dataset=args.taskid
     
     if not args.test:
@@ -100,13 +108,14 @@ def main():
 
 
     dsdir=os.path.join(basedir,dataset)
-    
-    for root in glob.glob(os.path.join(dsdir,'sub*/BOLD/%s'%tasknum_spec)):
- 
+    bolddirs=glob.glob(os.path.join(dsdir,'sub*/BOLD/%s'%tasknum_spec))
+    print bolddirs
+    for root in bolddirs:
+        #print 'ROOT:',root
         for m in glob.glob(os.path.join(root,'bold_mcf_brain.nii.gz')):
-            #print m
+            #print 'BOLDFILE:',m
             f_split=root.split('/')
-            print f_split
+            #print f_split
             scankey='/'+'/'.join(f_split[1:7])+'/scan_key.txt'
             taskid=f_split[6]
             subnum=int(f_split[7].lstrip('sub'))
@@ -117,16 +126,17 @@ def main():
             tr=float(load_scankey(scankey)['TR'])
             # check for inplane
             inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
-            if args.nobbr:
-                 print 'using nobbr option'
-                 print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
-            else:
-                 print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+##             if args.nobbr:
+##                  print 'using nobbr option'
+##                  print 'mk_level1_fsf("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
+##             else:
+##                  print 'mk_level1_fsf_bbr("%s",%d,%d,%d,%d,%d,"%s",%d)'%(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,modelnum)
             if not args.test:
                 if args.nobbr:
                      fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
                 else:
-                    fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+                    fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,args.anatimg,args.confound)
+                    #print 'CMD: mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,args.anatimg,args.confound)'
                 outfile.write('feat %s\n'%fname)
     if not args.test:
         outfile.close()
@@ -147,7 +157,8 @@ def main():
         if args.ncores==0:
             ncores=(njobs/way)*12.0
 
-        launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
+        if args.launch:
+            launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
 
 
 if __name__ == '__main__':
