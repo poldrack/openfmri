@@ -62,6 +62,8 @@ def parse_command_line():
         default=False,help='Use nonlinear regristration')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
+    parser.add_argument('--anatimg', dest='anatimg',
+        default='',help='Anatomy image (should be _brain)')
     
     args = parser.parse_args()
     return args
@@ -90,14 +92,19 @@ def main():
     basedir=args.basedir
     nonlinear=args.nonlinear
     modelnum=args.modelnum
+    anatimg=args.anatimg
+    
     print taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum
     
-    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
+    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,anatimg)
     
-def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1):
+def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1,anatimg=''):
     
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
 
+    if anatimg=='':
+        anatimg=os.path.join(subdir,'anatomy/highres001_brain')
+    
     # read the conditions_key file
     cond_key=load_condkey(os.path.join(basedir,taskid,'models/model%03d/condition_key.txt'%modelnum))
 
@@ -178,7 +185,7 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
     else:
         outfile.write('set fmri(reginitial_highres_yn) 0\n')
 
-    outfile.write('set highres_files(1) "%s/anatomy/highres001_brain"\n'%subdir)
+    outfile.write('set highres_files(1) "%s"\n'%anatimg)
     outfile.write('set fmri(npts) %d\n'%ntp)
     outfile.write('set fmri(tr) %0.2f\n'%tr)
     nevs=len(conditions)
