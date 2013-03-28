@@ -156,9 +156,11 @@ def main():
             
         if args.ncores==0:
             ncores=(njobs/way)*12.0
+        else:
+            ncores=args.ncores
 
         if args.launch:
-            launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=args.ncores)
+            launch_qsub.launch_qsub(script_name='mk_all_level1_%s.sh'%dataset,runtime='04:00:00',jobname='%sl1'%dataset,email=False,parenv=args.parenv,ncores=ncores)
 
 
 if __name__ == '__main__':
