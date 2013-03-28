@@ -60,6 +60,10 @@ def parse_command_line():
         default=0,help='Use inplane image')
     parser.add_argument('--nonlinear', dest='nonlinear', action='store_true',
         default=False,help='Use nonlinear regristration')
+    parser.add_argument('--nohpf', dest='hpf', action='store_false',
+        default=True,help='Turn off high pass filtering')
+    parser.add_argument('--nowhiten', dest='whiten', action='store_false',
+        default=True,help='Turn off prewhitening')
     parser.add_argument('--noconfound', dest='confound', action='store_false',
         default=True,help='Omit motion/confound modeling')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
@@ -96,15 +100,17 @@ def main():
     modelnum=args.modelnum
     anatimg=args.anatimg
     confound=args.confound
+    hpf = args.hpf
+    whiten=args.whiten
     
     print taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum
     
-    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,anatimg,confound)
+    mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,anatimg,confound,hpf,whiten)
     
-def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1,anatimg='',confound=True):
+def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir='/corral/utexas/poldracklab/openfmri/staged/',nonlinear=1,modelnum=1,anatimg='',confound=True,hpf=True,whiten=True):
     
     subdir='%s/%s/sub%03d'%(basedir,taskid,subnum)
-
+    print 'PROCESSING:',subdir
     if anatimg=='':
         anatimg=os.path.join(subdir,'anatomy/highres001_brain')
     
@@ -187,6 +193,16 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
         outfile.write('set initial_highres_files(1) "%s/anatomy/inplane001_brain.nii.gz"\n'%subdir)
     else:
         outfile.write('set fmri(reginitial_highres_yn) 0\n')
+
+    if whiten:
+        outfile.write('set fmri(prewhiten_yn) 1\n')
+    else:
+        outfile.write('set fmri(prewhiten_yn) 0\n')
+       
+    if hpf:
+        outfile.write('set fmri(temphp_yn) 1\n')
+    else:
+        outfile.write('set fmri(temphp_yn) 0\n')
 
     outfile.write('set highres_files(1) "%s"\n'%anatimg)
     outfile.write('set fmri(npts) %d\n'%ntp)
