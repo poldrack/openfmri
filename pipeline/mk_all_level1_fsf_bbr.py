@@ -67,6 +67,10 @@ def parse_command_line():
         default=False,help='Use nonlinear regristration')
     parser.add_argument('--nobbr', dest='nobbr', action='store_true',
         default=False,help='Use standard reg instead of BBR')
+    parser.add_argument('--nohpf', dest='hpf', action='store_false',
+        default=True,help='Turn off high pass filtering')
+    parser.add_argument('--nowhiten', dest='whiten', action='store_false',
+        default=True,help='Turn off prewhitening')
     parser.add_argument('--test', dest='test', action='store_true',
         default=False,help='Test mode (do not run job)')
     parser.add_argument('--nolaunch', dest='launch', action='store_false',
@@ -135,7 +139,7 @@ def main():
                 if args.nobbr:
                      fname=mk_level1_fsf(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum)
                 else:
-                    fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,args.anatimg,args.confound)
+                    fname=mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,args.anatimg,args.confound,args.hpf,args.whiten)
                     #print 'CMD: mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir,nonlinear,modelnum,args.anatimg,args.confound)'
                 outfile.write('feat %s\n'%fname)
     if not args.test:
