@@ -107,9 +107,6 @@ set fmri(norm_yn) 0
 # Perfusion subtraction
 set fmri(perfsub_yn) 0
 
-# Highpass temporal filtering
-set fmri(temphp_yn) 1
-
 # Lowpass temporal filtering
 set fmri(templp_yn) 0
 
@@ -118,9 +115,6 @@ set fmri(melodic_yn) 0
 
 # Carry out main stats?
 set fmri(stats_yn) 1
-
-# Carry out prewhitening?
-set fmri(prewhiten_yn) 1
 
 # Add motion parameters to model
 # 0 : No
