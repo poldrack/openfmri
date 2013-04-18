@@ -8,11 +8,11 @@ import nibabel as nib
 import os
 import scipy.stats
 
-nruns=500
+nruns=250
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/classifier/searchlight_rand'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/classifier/searchlight_rand'
 
-mask='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep/goodvoxmask.nii.gz'
+mask='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep/goodvoxmask.nii.gz'
 maskimg=nib.load(mask)
 maskdata=maskimg.get_data()
 maskvox=maskdata>0

@@ -48,8 +48,8 @@ import os
 load_data=True
 trainsvm=True
 testsvm=True
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/'
-melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/ICA_smoothed_6mm/'
+basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/'
+melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/ICA/'
 outdir=os.path.join(basedir,'classifier')
 labels=N.loadtxt(os.path.join(basedir,'data_prep/data_key_run1.txt'))[:,0]
 

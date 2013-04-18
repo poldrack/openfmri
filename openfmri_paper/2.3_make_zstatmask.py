@@ -3,7 +3,7 @@ import nibabel
 import os
 import numpy as N
 
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
 
 mask='/corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'
 
@@ -12,8 +12,8 @@ maskdata=m.get_data()
 maskvox=N.where(maskdata>0)
 
 badsubthresh=3
-run=2
-if 1:
+for run in [1,2]:
+
     print 'processing run ',run
     goodvox=N.zeros(maskdata.shape)
     missing_count=N.zeros(maskdata.shape)

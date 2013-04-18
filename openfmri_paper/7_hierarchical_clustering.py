@@ -15,9 +15,9 @@ import pickle
 
 clustering_type='average'
 
-dataprepdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep'
+dataprepdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
 datadir='/corral-repl/utexas/poldracklab/openfmri/shared2/mean_zstat'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/clustering'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/clustering'
 f=open(os.path.join(dataprepdir,'task_contrasts.pkl'),'rb')
 contrasts=pickle.load(f)
 f.close()
@@ -30,7 +30,7 @@ ctr=0
 for ds in contrasts_to_use.iterkeys():
     for task in contrasts_to_use[ds].iterkeys():
         for contrast in contrasts_to_use[ds][task]:
-            contrast_labels.append(ds+'_task%d:%s'%(task,contrasts[ds]['task%03d'%task]['contrasts'][contrast]))
+            contrast_labels.append(ds+'_task%d:%s'%(task,contrasts[ds]['task%03d'%task][contrast]))
             contrast_labels_short.append(ds+'_t%d_z%d'%(task,contrast))
             
             ctr+=1

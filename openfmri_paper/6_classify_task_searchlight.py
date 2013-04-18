@@ -41,8 +41,8 @@ run=int(sys.argv[1])
 
 # load data
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep/'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/classifier/searchlight'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep/'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/classifier/searchlight'
 
 load_data=True
 trainsvm=True
@@ -79,7 +79,7 @@ radius=5
 print 'starting searchlight...'
 
 sl = sphere_searchlight(cv, radius=radius, space='voxel_indices',
-                          postproc=mean_sample())
+                          postproc=mean_sample(),nproc=12)
 
 
 ds = dataset.copy(deep=False,

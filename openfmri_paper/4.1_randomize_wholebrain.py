@@ -38,8 +38,8 @@ import os,sys
 
 # load data
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep/'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/classifier/'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep/'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/classifier'
 
 load_data=True
 trainsvm=True
@@ -70,8 +70,9 @@ if 1:
     pred=N.zeros(len(labels))
     for train,test in skf:
         clf=LinearSVC()
-        clf.fit(data[train],labels[train])
-        pred[test]=clf.predict(data[test])
+        clf.fit(data[:,train].T,labels[train])
+        pred[test]=clf.predict(data[:,test].T)
+
 
 
     testacc=N.mean(pred==labels)

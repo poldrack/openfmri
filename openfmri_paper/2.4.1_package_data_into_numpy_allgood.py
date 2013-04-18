@@ -9,7 +9,7 @@ import numpy as N
 import nibabel as nib
 import os
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
 datafile=[os.path.join(datadir,'zstat_run1.nii.gz'),os.path.join(datadir,'zstat_run2.nii.gz')]
 infofile=[os.path.join(datadir,'data_key_run1.nii.gz'),os.path.join(datadir,'data_key_run2.nii.gz')]
 

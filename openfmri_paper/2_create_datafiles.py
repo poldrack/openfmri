@@ -34,7 +34,7 @@ from get_contrasts_to_use import *
 
 basedir='/corral-repl/utexas/poldracklab/openfmri/shared2/'
 zstatdir=os.path.join(basedir,'zstats')
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_March2013/data_prep'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
 
 
 contrasts_to_use=get_contrasts_to_use()
@@ -73,9 +73,9 @@ taskctr={'ds001': {1: 1},
  'ds052': {1: 19, 2: 20},
  'ds101': {1: 21},
  'ds102': {1: 22},
- 'ds105': {1: 23}
- 'ds107': {1: 24},
- 'ds108': {1: 25},
+ 'ds107': {1: 23},
+ 'ds108': {1: 24},
+ 'ds109': {1: 25},
  'ds110': {1: 26}}
 
 zstat_files={1:[],2:[]}  # index across runs

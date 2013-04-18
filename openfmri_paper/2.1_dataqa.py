@@ -17,7 +17,7 @@ mask='/corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/
 m=nibabel.load(mask)
 maskdata=m.get_data()
 
-for run in [2]:
+for run in [1]:
     print 'processing run ',run
     i=nibabel.load(os.path.join(outdir,'zstat_run%d.nii.gz'%run))
     d=i.get_data()

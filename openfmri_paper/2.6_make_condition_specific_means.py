@@ -6,7 +6,7 @@ import nibabel as nib
 basedir='/corral-repl/utexas/poldracklab/openfmri/shared2'
 outdir='/corral-repl/utexas/poldracklab/openfmri/shared2/mean_zstat'
 zstatdir=os.path.join(basedir,'zstats')
-infodir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep'
+infodir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
 
 all_zstats=os.listdir(zstatdir)
 z_task=[]

@@ -23,11 +23,14 @@ studies=['ds001',
 'ds052',
 'ds101',
 'ds102',
-'ds107']
+'ds107',
+'ds108',
+'ds109',
+'ds110']
 
 
 basedir='/corral-repl/utexas/poldracklab/openfmri/shared2'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
 
 subctr=0
 outfile=open('get_all_zstats.sh','w')
