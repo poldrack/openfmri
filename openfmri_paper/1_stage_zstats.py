@@ -30,7 +30,7 @@ studies=['ds001',
 
 
 basedir='/corral-repl/utexas/poldracklab/openfmri/shared2'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/data_prep'
 
 subctr=0
 outfile=open('get_all_zstats.sh','w')

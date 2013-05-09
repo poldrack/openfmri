@@ -34,7 +34,7 @@ from get_contrasts_to_use import *
 
 basedir='/corral-repl/utexas/poldracklab/openfmri/shared2/'
 zstatdir=os.path.join(basedir,'zstats')
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/data_prep'
 
 
 contrasts_to_use=get_contrasts_to_use()

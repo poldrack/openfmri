@@ -1,10 +1,13 @@
 import numpy as N
 import os
 import pickle
+from basedir import *
 
 def get_best_params():
-    basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/'
-    melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/ICA/'
+    basedir=BASEDIR
+    
+    melodic_dir=os.path.join(basedir,'ICA')
+    
     outdir=os.path.join(basedir,'classifier')
 
     f=open(os.path.join(outdir,'ICA_classifier_accdata_paramest_run2.pkl'))

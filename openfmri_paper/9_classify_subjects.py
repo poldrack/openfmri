@@ -6,7 +6,7 @@ import os
 from sklearn.multiclass import OneVsRestClassifier
 
 
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/'
+basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/'
 
 outdir=os.path.join(basedir,'classifier/subject_classifier')
 

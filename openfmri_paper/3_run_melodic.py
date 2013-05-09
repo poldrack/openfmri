@@ -12,9 +12,9 @@ import re
 
 
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/data_prep'
 
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/ICA'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/ICA'
 
 
 # melodic command:

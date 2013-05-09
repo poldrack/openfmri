@@ -5,13 +5,15 @@ import numpy as N
 import sys,os
 import os
 from sklearn.multiclass import OneVsRestClassifier
+from basedir import *
 
 try:
     run=int(sys.argv[1])
 except:
     run=1
 
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/'
+basedir=BASEDIR
+
 
 outdir=os.path.join(basedir,'classifier/subject_classifier')
 

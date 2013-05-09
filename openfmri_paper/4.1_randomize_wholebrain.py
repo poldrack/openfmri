@@ -38,8 +38,8 @@ import os,sys
 
 # load data
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep/'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/classifier'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/data_prep/'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/classifier'
 
 load_data=True
 trainsvm=True

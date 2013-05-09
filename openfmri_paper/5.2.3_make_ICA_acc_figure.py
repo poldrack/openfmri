@@ -10,7 +10,7 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from get_randperm_data import *
 
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/classifier'
+basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/classifier'
 
 f=open(os.path.join(basedir,'ICA_classifier_accuracy.pkl'),'rb')
 acc=pickle.load(f)

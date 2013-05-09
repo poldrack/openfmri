@@ -3,10 +3,12 @@
 """
 
 import os
+from basedir import *
 
 ncomps=[2,10,20,50,100,200]
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep/'
-icadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/ICA/'
+datadir=os.path.join(BASEDIR,'data_prep/')
+icadir=os.path.join(BASEDIR,'ICA')
+
 
 f=open('3.1.1_project_data_across_runs.sh','w')
 

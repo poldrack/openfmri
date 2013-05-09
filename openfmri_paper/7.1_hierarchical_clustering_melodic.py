@@ -12,16 +12,19 @@ import fastcluster
 import matplotlib.pyplot as plt
 from hcluster import dendrogram
 import pickle
+from basedir import *
 
 clustering_type='ward'
 
-X=N.loadtxt('/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/ICA/datarun1_icarun1_20comp.txt')
+X=N.loadtxt(os.path.join(BASEDIR,'ICA/datarun1_icarun1_20comp.txt'))
 
-taskinfo=N.loadtxt('/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep/data_key_run1.txt')
+taskinfo=N.loadtxt(os.path.join(BASEDIR,'data_prep/data_key_run1.txt'))
 
-dataprepdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep'
-#datadir='/corral-repl/utexas/poldracklab/openfmri/shared2/mean_zstat'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/clustering'
+dataprepdir=os.path.join(BASEDIR,'data_prep')
+
+
+outdir=os.path.join(BASEDIR,'clustering')
+
 
     
 conds=N.unique(taskinfo[:,0])
@@ -75,3 +78,7 @@ if plot_data:
     d=dendrogram(l,labels=contrast_labels,orientation='right')
     #plt.show()
     plt.savefig(os.path.join(outdir,'ICA_cluster_figure_%s.pdf'%clustering_type),format='pdf')
+
+for tasknum in d['leaves'][::-1]:
+    print contrast_labels[int(tasknum)]
+

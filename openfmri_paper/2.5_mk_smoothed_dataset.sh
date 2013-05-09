@@ -1,4 +1,4 @@
-DATADIR="/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_April2013/data_prep"
+DATADIR="/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/data_prep"
 
 SIGMA="2.94"
 
