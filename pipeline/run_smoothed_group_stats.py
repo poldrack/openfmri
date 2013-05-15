@@ -13,13 +13,16 @@ import argparse
 def parse_command_line():
     parser = argparse.ArgumentParser(description='run_smoothed_group_stats')
     parser.add_argument('-b','--basedir', dest='basedir',
-        help='base directory for data file', default='/corral-repl/utexas/poldracklab/data/openfmri/shared2')
+        help='base directory for data file', default='/corral-repl/utexas/poldracklab/openfmri/shared2')
     parser.add_argument('input',nargs='+', #dest='studyname',
         help='name of study/studies to be analyzed')
     parser.add_argument('--modelnum', dest='modelnum',type=int,
         default=1,help='Model number')
+    parser.add_argument('--niters', dest='niters',type=int,
+        default=5000,help='Number of iterations for randomise')
     parser.add_argument('--smoothing', dest='smoothing',type=float,
         default=6.0,help='Smoothing (mm FWHM)')
+    
     parser.add_argument('-m','--maskimg', dest='maskimg',
         help='mask image for randomise', default='/corral-repl/utexas/poldracklab/software_lonestar/fsl-5.0.1/data/standard/MNI152_T1_2mm_brain_mask.nii.gz')
 
@@ -52,6 +55,7 @@ f=open('mk_smooothed_files.sh','w')
 frand=open('run_smoothed_randomise.sh','w')
 
 for dataset in datasets:
+
     origdir=os.path.join(basedir,dataset,'group/model%03d'%modelnum)
     smoothdir=os.path.join(basedir,dataset,'group_smoothed')
 
@@ -81,8 +85,8 @@ for dataset in datasets:
             cmd='fslmaths %s -s %f %s'%(filtfunc,sigma,newfile)
             print cmd
             f.write('%s\n'%cmd)
-            cmd='randomise -i %s -o %s/%s -1 -m %s -n 5000 -T -R -v 10'%(newfile,
-                      newtaskdir,gfeatnum,maskimg)
+            cmd='randomise -i %s -o %s/%s -1 -m %s -n %d -T -R -v 10'%(newfile,
+                      newtaskdir,gfeatnum,maskimg,args.niters)
             print cmd
             frand.write(cmd+'\n')
 
