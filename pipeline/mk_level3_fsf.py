@@ -84,11 +84,12 @@ def mk_level3_fsf(taskid,tasknum,modelnum,basedir):
         outfile.write('set fmri(outputdir) "%s/cope%03d.gfeat"\n'%(modeldir,copenum))
 
         ngoodsubs=0
-        sublist=[x for x in os.listdir(basedir+taskid) if x.find('sub')==0]
+        sublist=glob.glob(os.path.join(basedir,taskid,'sub*'))
+        #[x for x in os.listdir(basedir+taskid) if x.find('sub')==0]
         nsubs=len(sublist)
         
         for r in range(nsubs):
-            featfile='%s%s/sub%03d/model/model%03d/task%03d.gfeat/cope%d.feat'%(basedir,taskid,r+1,modelnum,tasknum,copenum)
+            featfile='%s/model/model%03d/task%03d.gfeat/cope%d.feat'%(sublist[r],modelnum,tasknum,copenum)
             if os.path.exists(featfile):
                 outfile.write('set feat_files(%d) "%s"\n'%(ngoodsubs+1,featfile))
                 outfile.write('set fmri(evg%d.1) 1\n'%int(ngoodsubs+1))
