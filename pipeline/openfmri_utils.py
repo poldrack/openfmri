@@ -54,7 +54,7 @@ def load_scankey(scankeyfile):
     f=open(scankeyfile)
     scankey={}
     for l in f.readlines():
-        l_split=l.strip().split(' ')
+        l_split=l.strip().replace('\t',' ').split(' ')
         scankey[l_split[0]]=l_split[1]
     f.close()
     return scankey
@@ -63,7 +63,7 @@ def load_taskkey(taskkeyfile):
     f=open(taskkeyfile)
     taskkey={}
     for l in f.readlines():
-        l_split=l.strip().split(' ')
+        l_split=l.strip().replace('\t',' ').split(' ')
         taskkey[l_split[0]]='_'.join(l_split[1:])
     f.close()
     return taskkey
@@ -72,7 +72,7 @@ def load_contrastkey(contrastkeyfile):
     f=open(contrastkeyfile)
     contrastkey={}
     for l in f.readlines():
-        l_split=l.strip().split(' ')
+        l_split=l.strip().replace('\t',' ').split(' ')
         if not contrastkey.has_key(l_split[1]):
             contrastkey[l_split[1]]={}
 
