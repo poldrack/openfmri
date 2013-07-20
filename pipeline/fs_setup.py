@@ -31,9 +31,11 @@ if len(sys.argv)>2:
   basedir=sys.argv[2]
 else:
   basedir=os.path.abspath(os.curdir)
+if len(sys.argv)>3:
+  subdir=sys.argv[3]
+else:
+  subdir='/corral-repl/utexas/poldracklab/openfmri/subdir'
   
-#subdir='/scratch/01329/poldrack/openfmri/subdir'
-subdir='/corral-repl/utexas/poldracklab/openfmri/subdir'
 outfile=open('fs_setup.sh','w')
 #subdir=basedir+'subdir'
 if not basedir[-1]=='/':
