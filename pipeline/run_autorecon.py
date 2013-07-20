@@ -31,7 +31,7 @@ autorecon2/3: full surface reconstruction
 
 
 
-import os
+import os,glob
 import sys
 import launch_qsub
 
@@ -75,13 +75,10 @@ def main():
 
     outfile=open('run_autorecon%d_%s.sh'%(arlevel,dataset),'w')
     cmdctr=0
-    for d in os.listdir(os.path.join(basedir,dataset)):
-        if d[0:3]=='sub':
-            for m in os.listdir('%s/%s/anatomy/'%(os.path.join(basedir,dataset),d)):
-                if m=='highres001.nii.gz':
-                    subnum=int(d.replace('sub',''))
-                    outfile.write('recon-all -autorecon%d -subjid %s_sub%03d -sd %s\n'%(arlevel,dataset,subnum,subdir))
-                    cmdctr+=1
+    for d in glob.glob(os.path.join(basedir,dataset,'sub*/anatomy/highres001.nii.gz')):
+        subnum=int(d.split('/')[-3].replace('sub',''))
+        outfile.write('recon-all -autorecon%d -subjid %s_sub%03d -sd %s\n'%(arlevel,dataset,subnum,subdir))
+        cmdctr+=1
 
     outfile.close()
 
