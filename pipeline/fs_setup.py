@@ -52,7 +52,7 @@ for root,dirs,files in os.walk(basedir+dataset):
     for f in files:
         if f.rfind('highres001.nii.gz')>-1:
             f_split=root.split('/')
-            outfile.write('recon-all -i %s/%s -subjid %s_%s -sd %s\n'%(root,f,f_split[6],f_split[7],subdir))
+            outfile.write('recon-all -i %s/%s -subjid %s_%s -sd %s\n'%(root,f,f_split[-3],f_split[-2],subdir))
 
 outfile.close()
 
