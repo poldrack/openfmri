@@ -28,7 +28,7 @@ USAGE: python run_mcflirt.py <name of dataset> <basedir - default is staged>
 
 
 
-import os
+import os,glob
 import sys
 import launch_qsub
 
@@ -54,13 +54,13 @@ def main():
         
     outfile=open('run_mcflirt_%s.sh'%ds,'w')
 
-    for d in os.listdir(basedir+ds):
-        if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(basedir+ds,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(basedir+ds,d,bd)):
-                  if m=='bold.nii.gz':
-                      root='%s/%s/BOLD/%s/'%(basedir+ds,d,bd)
-                      outfile.write('mcflirt -in %s/%s -sinc_final -plots\n'%(root,m))
+    boldfiles=glob.glob(os.path.join(basedir,ds,'sub*/BOLD/*/bold.nii.gz'))
+    if len(boldfiles)==0:
+        print 'no bold files found!'
+        return
+    
+    for d in boldfiles:
+        outfile.write('mcflirt -in %s -sinc_final -plots\n'%d)
 
     outfile.close()
 
