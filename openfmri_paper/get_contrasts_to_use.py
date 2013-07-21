@@ -9,7 +9,7 @@ outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012
 
 
 def get_contrasts_to_use():
-    datasets=['ds001','ds002','ds003','ds005','ds006A','ds007','ds008','ds011','ds017A','ds051','ds052','ds101','ds102','ds105','ds107','ds108','ds110']
+    datasets=['ds001','ds002','ds003','ds005','ds006A','ds007','ds008','ds011','ds017A','ds051','ds052','ds101','ds102','ds107','ds108','ds109','ds110']
 
     contrasts_to_use={}
 
@@ -132,19 +132,18 @@ def get_contrasts_to_use():
     ## 7: 'words_vs_consonants'
     contrasts_to_use['ds107'][1]=[6]
 
-    ## ## ds105 task001 one-back_task
-    ## 11: 'face_vs_house'
-
-    contrasts_to_use['ds105'][1]=[11]
-
     ## ## ds108 task001 emotion regulation
     ## 24: Reapp_Neg_Stim_gt_Look_Neg_Stim 
 
     contrasts_to_use['ds108'][1]=[24]
 
+    ## ## ds109 theory of mind
+    ## 7  falsebeliefstory_vs_falsepicturestory
+
+    contrasts_to_use['ds109'][1]=[7]
+    
     ## ## ds110 task001 incidental memory encoding w/ cueing
-    ## 20: validly_cued_high_confidence_hit_objects_greater_than_validly_cu
-ed_miss_objects
+    ## 20: validly_cued_high_confidence_hit_objects_greater_than_validly_cued_miss_objects
 
     contrasts_to_use['ds110'][1]=[20]
 

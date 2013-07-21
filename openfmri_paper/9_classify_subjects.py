@@ -6,7 +6,7 @@ import os
 from sklearn.multiclass import OneVsRestClassifier
 
 
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/'
+basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/'
 
 outdir=os.path.join(basedir,'classifier/subject_classifier')
 
@@ -27,3 +27,4 @@ data2=N.load(os.path.join(basedir,'data_prep/zstat_run2_allgood.npy')).T
 
 print 'predicting...'
 pred=clf.predict(data2)
+print 'Mean accuracy:',N.mean(pred==labels2)

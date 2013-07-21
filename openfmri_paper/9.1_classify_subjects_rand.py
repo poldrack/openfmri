@@ -5,13 +5,15 @@ import numpy as N
 import sys,os
 import os
 from sklearn.multiclass import OneVsRestClassifier
+from basedir import *
 
 try:
     run=int(sys.argv[1])
 except:
     run=1
 
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/'
+basedir=BASEDIR
+
 
 outdir=os.path.join(basedir,'classifier/subject_classifier')
 
@@ -33,5 +35,7 @@ data2=N.load(os.path.join(basedir,'data_prep/zstat_run2_allgood.npy')).T
 
 print 'predicting...'
 pred=clf.predict(data2)
-acc=N.mean(pred==labels2)
-N.savetxt(os.path.join(outdir,'subclass_rand_%03d.txt'%run),[acc])
+print 'Mean accuracy:',N.mean(pred==labels2)
+
+#acc=N.mean(pred==labels2)
+#N.savetxt(os.path.join(outdir,'subclass_rand_%03d.txt'%run),[acc])

@@ -28,7 +28,7 @@ USAGE: python run_qa.py <name of dataset> <basedir - default is staged>
 
 
 
-import os
+import os,glob
 import sys
 import launch_qsub
 from openfmri_utils import load_scankey
@@ -59,20 +59,20 @@ def main():
     
     outfile=open('run_qa_%s.sh'%ds,'w')
     dsdir=os.path.join(basedir,ds)
-    for d in os.listdir(dsdir):
-        if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(dsdir,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(dsdir,d,bd)):
-                  if m=='bold_mcf.nii.gz':
-                      root='%s/%s/BOLD/%s/'%(dsdir,d,bd)
-                      outfile.write('fmriqa.py %s/%s %s\n'%(root,m,sk['TR']))
+    for d in glob.glob(os.path.join(dsdir,'sub*/BOLD/*/bold_mcf.nii.gz')):
+                      outfile.write('fmriqa.py %s %s\n'%(d,sk['TR']))
 
     outfile.close()
-
-
+    if float(sk['TR'])<2:
+	queue='largemem'
+	ncores=24
+	print 'using largemem queue'
+    else:
+	queue='normal'
+	ncores=12
     print 'now launching using:'
     print 'launch -s run_qa_%s.sh -n qa -r 00:30:00'%ds
-    launch_qsub.launch_qsub(script_name='run_qa_%s.sh'%ds,runtime='00:30:00',jobname='%sqa'%ds,email=False)
+    launch_qsub.launch_qsub(script_name='run_qa_%s.sh'%ds,runtime='00:30:00',jobname='%sqa'%ds,email=False,queue=queue,ncores=ncores)
 
 
 if __name__ == '__main__':

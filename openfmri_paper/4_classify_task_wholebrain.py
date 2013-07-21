@@ -29,7 +29,7 @@
 
 import numpy as N
 from sklearn.svm import LinearSVC,SVC
-from sklearn.cross_validation import LeaveOneOut,StratifiedKFold
+from sklearn.cross_validation import LeaveOneOut,StratifiedKFold,KFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 
@@ -37,8 +37,8 @@ import os
 
 # load data
 
-datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/data_prep/'
-outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/classifier/'
+datadir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/data_prep/'
+outdir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_May2013/classifier/'
 
 load_data=True
 trainsvm=True
@@ -71,6 +71,6 @@ if trainsvm:
 testacc=N.mean(pred==labels)
 print 'test accuracy = %f'%N.mean(pred==labels)
 cm=confusion_matrix(labels,pred)
-#print cm
+print cm
 
-#N.savez(os.path.join(outdir,'classifier_results_SVM'),pred,labels,cm)
+N.savez(os.path.join(outdir,'classifier_results_SVM'),pred,labels,cm)

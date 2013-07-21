@@ -35,12 +35,7 @@ import numpy as N
 import sys,os
 from get_best_params import *
 import os
-
-# params identified from run 2 data 
-#params={}
-#params['svm']={'C':3.162278}
-#params['lr']={'penalty':31.62277}
-#params['rbf']={'C':10,'gamma':1.0}
+from basedir import *
 
 
 # load data
@@ -48,8 +43,10 @@ import os
 load_data=True
 trainsvm=True
 testsvm=True
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/'
-melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/ICA_smoothed_6mm/'
+basedir=BASEDIR
+
+melodic_dir=os.path.join(BASEDIR,'ICA')
+
 outdir=os.path.join(basedir,'classifier')
 labels=N.loadtxt(os.path.join(basedir,'data_prep/data_key_run1.txt'))[:,0]
 
@@ -76,7 +73,7 @@ for c in range(len(ncomp)):
     pred['svm']=N.zeros(len(labels))
     pred['rbf']=N.zeros(len(labels))
     pred['lr']=N.zeros(len(labels))
-    data=N.genfromtxt(melodic_dir+'datarun1_icarun2_%dcomp.txt'%ncomp[c])
+    data=N.genfromtxt(os.path.join(melodic_dir,'datarun1_icarun2_%dcomp.txt'%ncomp[c]))
     for train,test in loo:
         svm_c=linsvm[c]
         print 'SVM: ',svm_c

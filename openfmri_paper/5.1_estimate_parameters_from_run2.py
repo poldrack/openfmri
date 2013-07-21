@@ -34,14 +34,16 @@ from sklearn.linear_model import LogisticRegression
 import pickle
 import numpy as N
 import os
+from basedir import *
 
 # load data
 
 load_data=True
 trainsvm=True
 testsvm=True
-basedir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/'
-melodic_dir='/corral-repl/utexas/poldracklab/openfmri/analyses/paper_analysis_Dec2012/ICA_smoothed_6mm/'
+basedir=BASEDIR
+
+melodic_dir=os.path.join(BASEDIR,'ICA')
 outdir=os.path.join(basedir,'classifier')
 train_labels=N.loadtxt(os.path.join(basedir,'data_prep/data_key_run2.txt'))[:,0]
 
@@ -68,7 +70,7 @@ for c in range(len(ncomp)):
     pred['svm']=N.zeros((len(train_labels),len(svmparams)))
     pred['rbf']=N.zeros((len(train_labels),len(svmparams),len(rbfparams)))
     pred['lr']=N.zeros((len(train_labels),len(lrparams)))
-    data=N.genfromtxt(melodic_dir+'datarun2_icarun2_%dcomp.txt'%ncomp[c])
+    data=N.genfromtxt(os.path.join(melodic_dir,'datarun2_icarun2_%dcomp.txt'%ncomp[c]))
 
     for p in range(len(svmparams)):
         for train,test in skf:
