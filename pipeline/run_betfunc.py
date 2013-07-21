@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """ run_betfunc.py - run bet on functional images
 
-USAGE: python run_betfnc.py <name of dataset> <basedir - default is staged>
+USAGE: python run_betfnc.py <name of dataset> <basedir - default is staged> <mcf process to wait on - default is none>
 
 """
 
@@ -28,7 +28,7 @@ USAGE: python run_betfnc.py <name of dataset> <basedir - default is staged>
 ## ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-import os
+import os,glob
 import sys
 import launch_qsub
 
@@ -47,24 +47,24 @@ def main():
     else:
 
         basedir='/scratch/01329/poldrack/openfmri/staged/'
-        
+    if len(sys.argv)>3:
+        wait_process=int(sys.argv[3])
+    else:
+        wait_process=[]
+    
     outfile=open('run_betfunc_%s.sh'%ds,'w')
     found_files=0
     dsdir=os.path.join(basedir,ds)
-    for d in os.listdir(dsdir):
-        if d[0:3]=='sub':
-            for bd in os.listdir('%s/%s/BOLD/'%(dsdir,d)):
-                for m in os.listdir('%s/%s/BOLD/%s/'%(dsdir,d,bd)):
-                  if m=='bold_mcf.nii.gz':
-                    root='%s/%s/BOLD/%s/'%(dsdir,d,bd)
-                    outfile.write('bet %s/%s %s/%s -F\n'%(root,m,root,m.replace('mcf','mcf_brain')))
+    for d in glob.glob(os.path.join(dsdir,'sub*/BOLD/*/bold.nii.gz')):
+                    outfile.write('bet %s %s -F\n'%(d.replace('.nii','_mcf.nii'),d.replace('.nii','_mcf_brain.nii')))
                     found_files=1
     outfile.close()
 
     if found_files>0:
         print 'now launching using:'
         print 'launch -s run_betfunc_%s.sh -n betfunc -r 00:10:00'%ds
-        launch_qsub.launch_qsub(script_name='run_betfunc_%s.sh'%ds,runtime='00:10:00',jobname='%sbf'%ds,email=False)
+
+        launch_qsub.launch_qsub(script_name='run_betfunc_%s.sh'%ds,runtime='00:10:00',jobname='%sbf'%ds,email=False,hold=wait_process)
     else:
         print 'no files found to process'
 
