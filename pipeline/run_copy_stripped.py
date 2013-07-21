@@ -63,7 +63,7 @@ for root,dirs,files in os.walk(dsdir):
     for f in files:
         if f.rfind('highres001.nii.gz')>-1 and root.find(dataset)>-1:
             f_split=root.split('/')
-            outfile.write('mri_convert --out_orientation LAS %s/%s_%s/mri/brainmask.mgz --reslice_like %s/highres001.nii.gz  %s/highres001_brain.nii\n'%(subdir,f_split[6],f_split[7],root,root))
+            outfile.write('mri_convert --out_orientation LAS %s/%s_%s/mri/brainmask.mgz --reslice_like %s/highres001.nii.gz  %s/highres001_brain.nii\n'%(subdir,f_split[-3],f_split[-2],root,root))
             outfile.write('gzip %s/highres001_brain.nii\n'%root)
             outfile.write('fslmaths %s/highres001_brain.nii.gz -thr 1 -bin %s/highres001_brain_mask.nii.gz\n'%(root,root))
 
