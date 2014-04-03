@@ -179,7 +179,7 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
     #output, errors = p.communicate()
     #ntp=int(output.split('\n')[4].split()[1])
 
-    img=nibabel.load('%s/BOLD/task%03d_run%03d/bold_mcf_brain'%(subdir,tasknum,runnum))
+    img=nibabel.load('%s/BOLD/task%03d_run%03d/bold_mcf_brain.nii.gz'%(subdir,tasknum,runnum))
     h=img.get_header()
     ntp=h.get_data_shape()[3]
     
