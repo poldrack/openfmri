@@ -36,7 +36,7 @@ import os
 import subprocess as sub
 from openfmri_utils import *
 import argparse
-
+import nibabel
 
 def parse_command_line():
     parser = argparse.ArgumentParser(description='setup_subject')
@@ -175,10 +175,14 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
     stubfile.close()
     # figure out how many timepoints there are
 
-    p = sub.Popen(['fslinfo','%s/BOLD/task%03d_run%03d/bold_mcf_brain'%(subdir,tasknum,runnum)],stdout=sub.PIPE,stderr=sub.PIPE)
-    output, errors = p.communicate()
-    ntp=int(output.split('\n')[4].split()[1])
+    #p = sub.Popen(['fslinfo','%s/BOLD/task%03d_run%03d/bold_mcf_brain'%(subdir,tasknum,runnum)],stdout=sub.PIPE,stderr=sub.PIPE)
+    #output, errors = p.communicate()
+    #ntp=int(output.split('\n')[4].split()[1])
 
+    img=nibabel.load('%s/BOLD/task%03d_run%03d/bold_mcf_brain.nii.gz'%(subdir,tasknum,runnum))
+    h=img.get_header()
+    ntp=h.get_data_shape()[3]
+    
     outfile.write('\n\n### AUTOMATICALLY GENERATED PART###\n\n')
     # now add custom lines
     outfile.write( 'set fmri(regstandard_nonlinear_yn) %d\n'%nonlinear)
