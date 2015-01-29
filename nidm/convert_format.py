@@ -12,7 +12,6 @@ from run_shell_cmd import run_shell_cmd
 import datetime
 import shutil
 import numpy
-sys.path.append('/Users/poldrack/Dropbox/code/openfmri/pipeline')
 from openfmri_utils import load_condkey
 
 def logmsg(msg,logfile='conversion_log.txt'):
@@ -33,10 +32,10 @@ def convert_behavdata(infile,outfile):
     print varnames
 
 newdirnames=['functional','anatomy','behav','model']
-# fieldnamp and diffusion do not exist so don't generate them
+# fieldnamp and diffusion do not exist for ds007 so don't generate them
 
 basedir='/Users/poldrack/Dropbox/code/openfmri/nidm/ds007'
-newdir='/Users/poldrack/Dropbox/code/openfmri/nidm/ds007_new'
+newdir=basedir+'_new'
 if not os.path.exists(newdir):
     os.mkdir(newdir)
     logmsg('mkdir %s'%newdir)
