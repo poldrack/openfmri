@@ -130,5 +130,5 @@ for subdir in subdirs:
                 condmatch=fullonsdata[:,2]==(cond+1)
                 fullonsdata=numpy.hstack((fullonsdata,condmatch[:,numpy.newaxis]))
 
-        numpy.savetxt(newbehavdatafile,fullonsdata,header=header)
+        numpy.savetxt(newbehavdatafile,fullonsdata,header='\t'.join(header),delimiter='\t',comments='')
     
