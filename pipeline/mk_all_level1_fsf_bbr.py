@@ -127,7 +127,7 @@ def main():
             tasknum=int(taskinfo[0].lstrip('task'))
 
             runnum=int(taskinfo[1].lstrip('run'))
-            tr=float(load_scankey(scankey)['TR'])
+            #tr=float(load_scankey(scankey)['TR'])
             # check for inplane
             inplane='/'+'/'.join(f_split[1:8])+'/anatomy/inplane001_brain.nii.gz'
 ##             if args.nobbr:

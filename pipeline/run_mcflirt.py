@@ -67,6 +67,7 @@ def main():
 
     print 'now launching using:'
     print 'launch -s run_mcflirt_%s.sh -n mcflirt -r 00:30:00'%ds
+    #launch_qsub.launch_qsub(script_name='run_mcflirt_%s.sh'%ds,runtime='00:30:00',jobname='%smcf'%ds,projname='Analysis_Lonestar',email=False)
     launch_qsub.launch_qsub(script_name='run_mcflirt_%s.sh'%ds,runtime='00:30:00',jobname='%smcf'%ds,email=False)
 
 

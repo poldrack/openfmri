@@ -26,12 +26,14 @@ try:
 except:
     tarballs_to_make['model']=1
 
+print tarballs_to_make
+
 for dataset in datasets:
 
     sublist=[s for s in os.listdir(os.path.join(basedir,dataset)) if s.find('sub')==0]
 
     if tarballs_to_make['raw']==1:
-        tarcmd='cd %s; tar zcvf %s/%s_raw.tgz %s/models %s/README* %s/*.txt '%(basedir,tbdir,dataset,dataset,dataset,dataset)
+        tarcmd='cd %s; tar zcvf %s/%s_raw.tgz '%(basedir,tbdir,dataset)
 
         for s in sublist:
             l=os.path.join(dataset,s)

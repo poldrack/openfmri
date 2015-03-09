@@ -146,9 +146,15 @@ def mk_level1_fsf_bbr(taskid,subnum,tasknum,runnum,smoothing,use_inplane,basedir
         contrasts=contrasts_all['task%03d'%tasknum]
  
  
+
+    try:
+        scan_key=load_scankey(os.path.join(basedir,taskid,'%s/BOLD/task%03d_run%03d/scan_key.txt'%(subdir,tasknum,runnum)))
+        tr=float(scan_key['TR'])
+        print 'using task-specific scan key'
+    except:
+        scan_key=load_scankey(os.path.join(basedir,taskid,'scan_key.txt'))
+        tr=float(scan_key['TR'])
         
-    scan_key=load_scankey(os.path.join(basedir,taskid,'scan_key.txt'))
-    tr=float(scan_key['TR'])
     if scan_key.has_key('nskip'):
         nskip=int(scan_key['nskip'])
     else:
