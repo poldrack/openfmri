@@ -17,6 +17,7 @@ opt_folders = ['DTI','dwi','diffusion','MEG','fieldmap'] # check if these folder
 
 subjects = []
 tasks = set([]) # names of the task folders (incl. runs) - e.g. taskXXX_runYYY
+models_conds = {} # dict mapping models to their required conditions/onset files
 #### end dataset definiiton ####
 
 
@@ -78,7 +79,8 @@ for sub_ind,s in enumerate(subjects): # sub_ind starts at 0!
 	for key in ofbucket.list(prefix=subprefix, delimiter='/'):
 		kname = key.name.encode('utf-8')
 		shortname = kname.split('/')[2]
-		if not shortname in subject_folders: # a folder not included in the base list is encountered for the first time
+		if not shortname in subject_folders:
+		# a folder not included in the base list is encountered for the first time
 			if shortname in opt_folders:
 				print 'It looks like this study has %s data... will check that all subjects have this.' % shortname
 			else:
@@ -98,21 +100,43 @@ for sub_ind,s in enumerate(subjects): # sub_ind starts at 0!
 				taskfolders_sub.add(taskfoldername)
 			#print tasks
 		#print s, shortname, shortname in subject_folders, kname
+		if shortname=='model': #models - look in here for
+		#a) how many models exist, b) whether all the tasks/runs are present and 
+		#c) whether all the onset files for the different conditions are present
+			for model in ofbucket.list(prefix='%smodel'%kname,delimiter='/'):
+				modelname = model.name.encode('utf-8').split('/')[-2]
+				if not modelname in models_conds: #is modelname a key? if not, new model!
+					ofiles = set([])
+					otfolders = set([])
+					# otf = onset task folder
+					for otf in ofbucket.list(prefix='%s%s/onsets/task'%(kname,modelname),delimiter='/'):
+						otfname = otf.name.encode('utf-8')
+						if not otfname in otfolders:
+							otfolders.add(otfname)
+						for ofile in ofbucket.list(prefix='%s'%(otfname,),delimiter='/'):
+							ofilename = ofile.name.encode('utf-8').split('/')[-1]
+							#print ofilename, ofilename in ofiles
+							if ofilename not in ofiles:
+								ofiles.add(ofilename)
+					models_conds[modelname] = ofiles
 		shortnames.append(shortname)
 	folders_and_statuses = zip(subject_folders,[f in shortnames for f in subject_folders])
 	tasks_and_statuses = zip(tasks,[t in taskfolders_sub for t in tasks])
+	otfolders_st = zip(otfolders,[otfolder in taskfolders_sub for otfolder in otfolders])
 	# create a dict mapping folders to true/false (there will be an instance of this dict for each subject)
         sub_dict = {folder:status for folder,status in folders_and_statuses}
 	taskdict_sub = {taskfolder:status for taskfolder,status in tasks_and_statuses}
 	all_subs_folders[s] = sub_dict
 	all_subs_tasks[s] = taskdict_sub
+	print otfolders_st
 	#print 'Finished subject %d.'%sub_ind
 
 print 'All subjects must have these folders: %s'%subject_folders
 print 'All subjects must have these tasks/runs: %s'%tasks
+print 'Models and required onset files: %s'%models_conds
 
-#print all_subs_folders
-#print all_subs_tasks
+print all_subs_folders
+print all_subs_tasks
 
 for sub in all_subs_folders:
 	fstats = all_subs_folders[sub]
