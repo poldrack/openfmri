@@ -1,8 +1,0 @@
-Code for the OpenfMRI project (http://www.openfmri.org)
-
-This repo contains:
-
-pipeline: code to run the openfmri analysis pipeline
-paper_analyses: code to run the analyses for the Poldrack et al. paper
-(currently under submission)
-
